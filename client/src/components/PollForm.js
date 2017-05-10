@@ -12,26 +12,26 @@ export default class PollForm extends Component {
         onSubmit: PropTypes.func.isRequired,
     };
 
-    handleChangeTitle(event) {
+    handleChangeTitle = (event) => {
         this.props.onChangeTitle(event.target.value);
-    }
+    };
 
-    handleAddOption() {
+    handleAddOption = () => {
         this.props.onAddOption();
-    }
+    };
 
-    handleRemoveOption() {
+    handleRemoveOption = () => {
         this.props.onRemoveOption();
-    }
+    };
 
-    handleChangeOption(event) {
+    handleChangeOption = (event) => {
         const {
             'data-option-index': idx,
             value,
         } = event.target;
 
         this.props.onChangeOption(idx, value);
-    }
+    };
 
     render() {
         const {

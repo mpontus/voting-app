@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import logo from './logo.svg';
-import Form from './components/Form'
+import PollForm from './containers/PollFormContainer'
 import './App.css';
 
 class App extends Component {
@@ -14,23 +14,7 @@ class App extends Component {
                 <p className="App-intro">
                     To get started, edit <code>src/App.js</code> and save to reload.
                 </p>
-                <Form
-                    title="foo"
-                    options={[
-                        'bar',
-                        'baz',
-                    ]}
-                    onChangeTitle={() => {
-                    }}
-                    onChangeOption={() => {
-                    }}
-                    onAddOption={() => {
-                    }}
-                    onRemoveOption={() => {
-                    }}
-                    onSubmit={() => {
-                    }}
-                />
+                <PollForm/>
             </div>
         );
     }

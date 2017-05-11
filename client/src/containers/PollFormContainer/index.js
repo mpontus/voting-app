@@ -46,7 +46,7 @@ class PollFormContainer extends Component {
     };
 
     handleChangeOption = (index, value) => {
-        this.props.optionUpdated(value)
+        this.props.optionUpdated(index, value);
     };
 
     handleAddOption = () => {

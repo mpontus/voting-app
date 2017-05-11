@@ -26,11 +26,11 @@ export default class PollForm extends Component {
 
     handleChangeOption = (event) => {
         const {
-            'data-option-index': idx,
+            dataset: { optionIndex },
             value,
         } = event.target;
 
-        this.props.onChangeOption(idx, value);
+        this.props.onChangeOption(optionIndex, value);
     };
 
     render() {

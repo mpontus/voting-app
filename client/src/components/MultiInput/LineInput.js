@@ -6,16 +6,14 @@ export default class LineInput extends Component {
         index: PropTypes.number.isRequired,
         value: PropTypes.string.isRequired,
         onChange: PropTypes.func.isRequired,
-        onTabPress: PropTypes.func.isRequired,
+        onKeyDown: PropTypes.func.isRequired,
         onBlur: PropTypes.func.isRequired,
     };
 
     handleKeyDown = (event) => {
-        const { index, onTabPress } = this.props;
+        const { index, onKeyDown } = this.props;
 
-        if (event.key === 'Tab') {
-            onTabPress(event, index);
-        }
+        onKeyDown(event, index, event.key);
     };
 
     handleChange = (event) => {
@@ -28,6 +26,12 @@ export default class LineInput extends Component {
         const { index, onBlur } = this.props;
 
         onBlur(event, index);
+    };
+
+    setRef = (input) => {
+        const { index, setRef } = this.props;
+
+        setRef(index, input);
     };
 
     render() {
@@ -43,6 +47,7 @@ export default class LineInput extends Component {
                 onKeyDown={this.handleKeyDown}
                 onChange={this.handleChange}
                 onBlur={this.handleBlur}
+                ref={this.setRef}
             />
         )
     }

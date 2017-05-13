@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import MultiInput from './MultiInput'
 
 export default class PollForm extends Component {
     static propTypes = {
@@ -37,6 +38,9 @@ export default class PollForm extends Component {
         const {
             title,
             options,
+            onChangeOption,
+            onAddOption,
+            onRemoveOption,
         } = this.props;
 
         return (
@@ -54,15 +58,12 @@ export default class PollForm extends Component {
                     <div>
                         <label>Options</label>
                     </div>
-                    {options.map((option, idx) => (
-                        <div key={idx}>
-                            <input
-                                value={option}
-                                onChange={this.handleChangeOption}
-                                data-option-index={idx}
-                            />
-                        </div>
-                    ))}
+                    <MultiInput
+                        lines={options}
+                        onChangeLine={onChangeOption}
+                        onAddLine={onAddOption}
+                        onRemoveLine={onRemoveOption}
+                    />
                 </div>
                 <input type="submit"/>
             </form>

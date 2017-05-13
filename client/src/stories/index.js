@@ -1,17 +1,16 @@
 import React from 'react';
-import { storiesOf, action, linkTo } from '@kadira/storybook';
-import Button from './Button';
-import Welcome from './Welcome';
+import { storiesOf, action } from '@kadira/storybook';
+import MultiInputStory from './MultiInputStory';
 
-storiesOf('Welcome', module)
-  .add('to Storybook', () => (
-    <Welcome showApp={linkTo('Button')}/>
-  ));
-
-storiesOf('Button', module)
-  .add('with text', () => (
-    <Button onClick={action('clicked')}>Hello Button</Button>
-  ))
-  .add('with some emoji', () => (
-    <Button onClick={action('clicked')}>😀 😎 👍 💯</Button>
-  ));
+storiesOf('MultiInput', module)
+    .add('normal behavior', () => (
+        <MultiInputStory
+            defaultLines={[
+                'foo',
+                'bar',
+            ]}
+            onChangeLine={action('changeLine')}
+            onAddLine={action('addLine')}
+            onRemoveLine={action('removeLine')}
+        />
+    ));

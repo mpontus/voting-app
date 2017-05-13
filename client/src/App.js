@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import logo from './logo.svg';
-import PollForm from './containers/PollFormContainer'
+import PollForm from './containers/PollFormContainer/PollFormContainer'
 import MultiInput from './components/MultiInput/MultiInput'
 import './App.css';
 
@@ -16,7 +16,6 @@ class App extends Component {
                     To get started, edit <code>src/App.js</code> and save to reload.
                 </p>
                 <PollForm/>
-                <MultiInput lines={['foo', 'bar']} />
             </div>
         );
     }

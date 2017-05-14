@@ -28,12 +28,6 @@ export default class LineInput extends Component {
         onBlur(event, index);
     };
 
-    setRef = (input) => {
-        const { index, setRef } = this.props;
-
-        setRef(index, input);
-    };
-
     render() {
         const {
             index,
@@ -47,7 +41,6 @@ export default class LineInput extends Component {
                 onKeyDown={this.handleKeyDown}
                 onChange={this.handleChange}
                 onBlur={this.handleBlur}
-                ref={this.setRef}
             />
         )
     }

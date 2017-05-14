@@ -97,89 +97,34 @@ describe('MultiInput', () => {
         expect(wrapper.prop('onRemoveLine')).toHaveBeenCalledWith(emptyIndex);
     });
 
-    it('must invoke onRemoveLine when backspace is pressed on empty row', () => {
-        const lines = ['foo', '', 'baz'];
+    it('must render at least as many rows as minLines', () => {
+        const lines = ['foo', 'bar'];
+        const minLines = 5;
         const wrapper = mount(
             <MultiInput
                 lines={lines}
-                onRemoveLine={jest.fn()}
+                minLines={minLines}
+            />
+        );
+
+        expect(wrapper.find('input').length).toBe(minLines);
+    });
+
+    it('must not remove the lines beyond minLines', () => {
+        const lines = ['foo', ''];
+        const onRemoveLine = jest.fn();
+        const wrapper = mount(
+            <MultiInput
+                lines={lines}
+                minLines={2}
+                onRemoveLine={onRemoveLine}
             />
         );
         const emptyIndex = 1;
         const inputWrapper = wrapper.find('input').at(emptyIndex);
 
-        inputWrapper.simulate('keydown', { key: 'Backspace', keyCode: 8, which: 8 });
+        inputWrapper.simulate('blur');
 
-        expect(wrapper.prop('onRemoveLine')).toHaveBeenCalledTimes(1);
-        expect(wrapper.prop('onRemoveLine')).toHaveBeenCalledWith(emptyIndex);
-    });
-
-    it('must focus on the previous line when backspace is pressed on empty row', () => {
-        const lines = ['foo', '', 'baz'];
-        const wrapper = mount(
-            <MultiInput
-                lines={lines}
-                onRemoveLine={jest.fn()}
-            />
-        );
-        const emptyIndex = 1;
-        const inputWrapper = wrapper.find('input').at(emptyIndex);
-        const previousInput = wrapper.find('input').at(emptyIndex - 1);
-
-        // TODO: replace with jest.spyOn() after create-react-app updates to jest 19
-        previousInput.node.focus = jest.fn();
-        inputWrapper.simulate('keydown', { key: 'Backspace', keyCode: 8, which: 8 });
-
-        expect(previousInput.node.focus).toHaveBeenCalledTimes(1);
-    });
-
-    it('must invoke onRemoveLine when backspace is pressed on empty row', () => {
-        const lines = ['foo', '', 'baz'];
-        const wrapper = mount(
-            <MultiInput
-                lines={lines}
-                onRemoveLine={jest.fn()}
-            />
-        );
-        const emptyIndex = 1;
-        const inputWrapper = wrapper.find('input').at(emptyIndex);
-
-        inputWrapper.simulate('keydown', { key: 'Delete', keyCode: 46, which: 46 });
-
-        expect(wrapper.prop('onRemoveLine')).toHaveBeenCalledTimes(1);
-        expect(wrapper.prop('onRemoveLine')).toHaveBeenCalledWith(emptyIndex);
-    });
-
-
-    // describe('when pressing backspace in an empty row', () => {
-    //     const lines = [
-    //         'one',
-    //         'two',
-    //         'three',
-    //         'four',
-    //     ];
-    //     const focusIndex = 2;
-    //     let wrapper;
-    //
-    //     beforeAll(() => {
-    //         wrapper = mount(
-    //             <MultiInput
-    //                 lines={lines}
-    //                 onRemoveLine={jest.fn()}
-    //             />
-    //         );
-    //     });
-    //
-    //     it('must remove the line', () => {
-    //         expect(wrapper.props().onRemoveLine).toHaveBeenCalledTimes(1);
-    //         expect(wrapper.props().onRemoveLine).toHaveBeenCalledWith(focusIndex);
-    //     });
-    //
-    //     it('must focus on the previous line', () => {
-    //         const everyInput = wrapper.find('input');
-    //         const previousInput = everyInput.at(focusIndex - 1);
-    //
-    //         expect(previousInput.is(':focus')).toBe(true);
-    //     });
-    // });
+        expect(onRemoveLine).not.toHaveBeenCalled();
+    })
 });

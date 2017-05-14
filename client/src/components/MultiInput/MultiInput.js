@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { repeat } from 'ramda';
 import LineInput from './LineInput';
 
+// TODO: Handle backspace and delete keys
 export default class MultiInput extends Component {
     static propTypes = {
         lines: PropTypes.arrayOf(PropTypes.string).isRequired,
@@ -16,8 +17,6 @@ export default class MultiInput extends Component {
         minLines: 0,
     };
 
-    inputs = [];
-
     handleChange = (event, index, value) => {
         const { onChangeLine } = this.props;
 
@@ -27,49 +26,13 @@ export default class MultiInput extends Component {
     };
 
     handleKeyDown = (event, index, key) => {
-        const { lines } = this.props;
-
-        switch (key) {
-            case 'Tab':
-                this.handleTabKey(event, index);
-
-                return;
-
-            case 'Backspace':
-                this.handleBackspaceKey(event, index);
-
-                return;
-
-            case 'Delete':
-                this.handleDeleteKey(event, index);
-
-                return;
-        }
-    };
-
-    handleBlur = (event, index) => {
-        const { lines, onRemoveLine } = this.props;
-
-        if (!onRemoveLine) {
-            return;
-        }
-
-        if (lines[index] !== '') {
-            return;
-        }
-
-        if (lines.length <= minLines) {
-            return;
-        }
-
-        onRemoveLine(index);
-    };
-
-    handleTabKey = (event, index) => {
         const { lines, onAddLine } = this.props;
         const lastIndex = lines.length - 1;
 
-        // Shift key must not be held
+        if (key !== 'Tab') {
+            return;
+        }
+
         if (event.shiftKey) {
             return;
         }
@@ -89,58 +52,25 @@ export default class MultiInput extends Component {
             return;
         }
 
-        this.props.onAddLine();
+        onAddLine();
     };
 
-    handleBackspaceKey = (event, index) => {
+    handleBlur = (event, index) => {
         const { lines, minLines, onRemoveLine } = this.props;
 
-        // Line must be empty
-        if (lines[index] !== '') {
+        if (!onRemoveLine) {
             return;
         }
-
-        // Removal must be possible
-        if (minLines <= lines.length) {
-            return;
-        }
-
-        // Handle removal of the only line
-        if (lines.length === 1) {
-            onRemoveLine(index);
-            event.preventDefault();
-
-            return;
-        }
-
-        // Handle removal of the first line
-        if (index === 0) {
-            // Focus on the next row and let blur handler take care of removal
-            this.inputs[index + 1].focus();
-            event.preventDefault();
-
-            return;
-        }
-
-        // For subsequent rows focus on preceeding row and let blur handler take care of removal
-        this.inputs[index - 1].focus();
-        event.preventDefault();
-    };
-
-    handleDeleteKey = (event, index) => {
-        const { lines, onRemoveLine } = this.props;
 
         if (lines[index] !== '') {
             return;
         }
 
-        event.preventDefault();
+        if (lines.length <= minLines) {
+            return;
+        }
 
         onRemoveLine(index);
-    };
-
-    setRef = (index, input) => {
-        this.inputs[index] = input;
     };
 
     render() {
@@ -161,7 +91,6 @@ export default class MultiInput extends Component {
                             onChange={this.handleChange}
                             onKeyDown={this.handleKeyDown}
                             onBlur={this.handleBlur}
-                            setRef={this.setRef}
                         />
                     </div>
                 ))}

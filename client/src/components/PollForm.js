@@ -60,6 +60,7 @@ export default class PollForm extends Component {
                     </div>
                     <MultiInput
                         lines={options}
+                        minLines={2}
                         onChangeLine={onChangeOption}
                         onAddLine={onAddOption}
                         onRemoveLine={onRemoveOption}

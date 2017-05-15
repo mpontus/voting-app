@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "start": "nodemon src --exec babel-node",
     "test": "better-npm-run test"
   },
   "betterScripts": {
@@ -27,6 +28,7 @@
   "dependencies": {
     "bcrypt": "^1.0.2",
     "body-parser": "^1.17.1",
+    "dotenv": "^4.0.0",
     "express": "^4.15.2",
     "express-jwt": "^5.3.0",
     "jsonwebtoken": "^7.4.0",

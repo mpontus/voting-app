@@ -15,11 +15,6 @@ const App = (db) => {
 
     app.use(morgan('combined'));
     app.use(bodyParser.json());
-    // app.get('/polls', async (req, res) => {
-    //     const cursor = db.collection('polls').find();
-    //     const polls = await cursor.toArray();
-    //     res.json(polls);
-    // });
 
     const jwtMiddleware = jwt({ secret: process.env.SECRET });
 

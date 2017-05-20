@@ -3,7 +3,7 @@ import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import configureRoutes from './routes';
 
-export default function createApp(db, secret, saltRounds) {
+export default function createApp(db, secret, saltRounds = 10) {
     const app = express();
 
     app.use(morgan('combined'));

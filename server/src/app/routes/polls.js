@@ -133,7 +133,7 @@ export default function (app, db, secret) {
         res.json(poll);
     }));
 
-    app.post('/polls/:id/votes', jwt({ secret: process.env.SECRET }), wrap(async (req, res) => {
+    app.post('/polls/:id/votes', jwtMiddleware, wrap(async (req, res) => {
         const { id } = req.params;
         const { option } = req.body;
         const userId = req.user.id;

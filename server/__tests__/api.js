@@ -2,7 +2,7 @@ import request from 'supertest'
 import {MongoClient, ObjectID} from 'mongodb';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import App from '../src/app';
+import createApp from '../src/app';
 
 const isValidJwt = (token) => {
     try {
@@ -52,7 +52,11 @@ describe('API', () => {
 
         await db.dropDatabase();
 
-        app = App(db);
+        app = createApp(db, 'secret');
+    });
+
+    afterAll(() => {
+        db.close();
     });
 
     describe('POST /token', () => {

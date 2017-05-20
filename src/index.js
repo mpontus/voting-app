@@ -1,10 +1,10 @@
 import dotenv from 'dotenv';
 import { MongoClient } from 'mongodb';
-import App from './app';
+import createApp from './app';
 
 dotenv.config();
 
-Array.of('SECRET', 'SALT_ROUNDS').forEach((varname) => {
+Array.of('SECRET').forEach((varname) => {
     if (!varname in process.env) {
         console.error(`${varname} must be set in the environment variables`);
         console.error('Did you forget to copy .env.dist to .env?');
@@ -14,15 +14,15 @@ Array.of('SECRET', 'SALT_ROUNDS').forEach((varname) => {
 
 const port = parseInt(process.env.PORT || '3000', 10);
 const mongoUrl = process.env.MONGO_URL || 'mongodb://localhost:27017/voting-app';
+const secret = process.env.SECRET;
+const saltRounds = Number(process.env.SALT_ROUNDS) || 10;
 
 MongoClient.connect(mongoUrl, (err, db) => {
     if (err) {
         throw err;
     }
 
-    console.log(`Connected to mongodb server on address ${mongoUrl}`);
-
-    const app = App(db);
+    const app = createApp(db, secret, saltRounds);
     const server = app.listen(port);
 
     server.on('listening', () => {

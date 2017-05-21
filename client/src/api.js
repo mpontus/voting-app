@@ -28,7 +28,6 @@ const createUrlModifier = modifier => R.pipe(
 // TODO: Find more descriptive functions to default values according to schema
 const normalizeUrl = createUrlModifier(
     ({ protocol, pathname }) => ({
-        protocol: protocol || 'https',
         pathname: pathname || '/',
     })
 );
@@ -55,7 +54,7 @@ class TokenStorage {
     refreshToken = null;
 
     setAccessToken(token) {
-        this.accessToken = accessToken;
+        this.accessToken = token;
     }
 
     getAccessToken() {
@@ -63,7 +62,7 @@ class TokenStorage {
     }
 
     setRefreshToken(token) {
-        this.refreshToken = refreshToken;
+        this.refreshToken = token;
     }
 
     getRefreshToken() {
@@ -73,12 +72,33 @@ class TokenStorage {
 
 export default class Api {
     constructor(apiUrl, {
-        fetch = window.fetch,
+        fetch = window.fetch.bind(window),
         tokenStorage = new TokenStorage(),
-    }) {
+    } = {}) {
         this.apiUrl = normalizeUrl(apiUrl);
-        this.fetch = fetch;
+        this.fetchImplementation = fetch;
         this.tokenStorage = tokenStorage;
+    }
+
+    async init() {
+        if (this.tokenStorage.getAccessToken()) {
+            return Promise.resolve();
+        }
+
+        return this.getAnonymousToken();
+    }
+
+    fetch(input, init) {
+        return this.fetchImplementation(
+            input,
+            {
+                ...init,
+                headers: {
+                    ...init.headers,
+                    'Content-Type': 'application/json',
+                }
+            }
+        )
     }
 
     getResourceUrl(resource, query) {
@@ -115,7 +135,7 @@ export default class Api {
         return result;
     }
 
-    register() {
+    register(username, password) {
         return this.fetch(this.getResourceUrl('users'), {
             method: 'POST',
             body: JSON.stringify({ username, password }),
@@ -137,7 +157,7 @@ export default class Api {
         const url = this.getResourceUrl(`polls/${id}`);
         const accessToken = this.tokenStorage.getAccessToken();
 
-        return this.fetch(this.getResourceUrl(`polls/${id}`), {
+        return window.fetch(this.getResourceUrl(`polls/${id}`), {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },

@@ -1,0 +1,4 @@
+export const CLIENT_INFO_OBTAINED = 'CLIENT_INFO_OBTAINED';
+export const LOGOUT = 'LOGOUT';
+export const POLL_LOADED = 'POLL_LOADED';
+export const POLLS_LOADED = 'POLLS_LOADED';

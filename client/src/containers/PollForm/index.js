@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { withRouter } from 'react-router';
 import BasicPollForm from 'components/PollForm';
 
 import {
@@ -14,7 +16,7 @@ import {
     optionUpdated,
     optionInserted,
     optionRemoved,
-    submitted,
+    pollSubmitted,
 } from './actions';
 
 const mapStateToProps = createStructuredSelector({
@@ -27,7 +29,7 @@ const mapDispatchToProps = {
     optionUpdated,
     optionInserted,
     optionRemoved,
-    submitted,
+    pollSubmitted,
 };
 
 class PollFormContainer extends Component {
@@ -38,7 +40,7 @@ class PollFormContainer extends Component {
         optionUpdated:  PropTypes.func.isRequired,
         optionInserted: PropTypes.func.isRequired,
         optionRemoved:  PropTypes.func.isRequired,
-        submitted:      PropTypes.func.isRequired,
+        pollSubmitted:  PropTypes.func.isRequired,
     };
 
     handleChangeTitle = (value) => {
@@ -60,11 +62,17 @@ class PollFormContainer extends Component {
         this.props.optionRemoved(index);
     };
 
-    handleSubmit = ({ title, options }) => {
-        this.props.pollSubmitted({
+    handleSubmit = (event) => {
+        const { pollSubmitted, title, options, history } = this.props;
+
+        event.preventDefault();
+
+        pollSubmitted({
             title,
             options,
-        });
+        }).then(() => {
+            history.push('/');
+        })
     };
 
     render() {
@@ -84,4 +92,7 @@ class PollFormContainer extends Component {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PollFormContainer);
+export default compose(
+    connect(mapStateToProps, mapDispatchToProps),
+    withRouter
+)(PollFormContainer);

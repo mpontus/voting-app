@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import logo from './logo.svg';
-import PollForm from './containers/PollFormContainer/PollFormContainer'
+import PollForm from './containers/PollForm/index'
 import MultiInput from './components/MultiInput/MultiInput'
 import './App.css';
 

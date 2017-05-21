@@ -34,6 +34,10 @@ export default class PollForm extends Component {
         this.props.onChangeOption(optionIndex, value);
     };
 
+    handleSubmit = (event) => {
+        this.props.onSubmit(event);
+    };
+
     render() {
         const {
             title,
@@ -44,7 +48,7 @@ export default class PollForm extends Component {
         } = this.props;
 
         return (
-            <form>
+            <form onSubmit={this.handleSubmit}>
                 <div>
                     <div>
                         <label>Title</label>

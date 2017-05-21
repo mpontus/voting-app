@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import express from 'express';
 import { MongoClient } from 'mongodb';
 import createApp from './app';
 
@@ -22,7 +23,11 @@ MongoClient.connect(mongoUrl, (err, db) => {
         throw err;
     }
 
-    const app = createApp(db, secret, saltRounds);
+    const app = express();
+    const apiApp = createApp(db, secret, saltRounds);
+
+    app.use('/api', apiApp);
+
     const server = app.listen(port);
 
     server.on('listening', () => {

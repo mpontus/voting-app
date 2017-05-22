@@ -1,15 +1,23 @@
 import React from 'react'
 import { Switch, Route } from 'react-router-dom';
-import HomePage from 'containers/HomePage';
-import PollForm from 'containers/PollForm';
-import PollRoute from 'containers/PollRoute';
+import { MuiThemeProvider } from 'material-ui';
+import Layout from 'components/Layout';
+import HomePage from 'components/HomePage';
+import LoginPage from 'components/LoginPage';
+import ViewPollPage from 'components/ViewPollPage'
+import CreatePollPage from 'components/CreatePollPage'
 
 const App = () => (
-    <Switch>
-        <Route exact path="/" component={HomePage} />
-        <Route path="/new" component={PollForm} />
-        <Route path="/poll/:id" component={PollRoute} />
-    </Switch>
-)
+    <MuiThemeProvider>
+        <Layout>
+            <Switch>
+                <Route exact path="/" component={HomePage} />
+                <Route exact path="/login" component={LoginPage} />
+                <Route exact path="/poll/:id" component={ViewPollPage} />
+                <Route exact path="/new" component={CreatePollPage} />
+            </Switch>
+        </Layout>
+    </MuiThemeProvider>
+);
 
 export default App;

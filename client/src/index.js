@@ -7,7 +7,7 @@ import App from 'containers/App';
 import Devtools from './containers/DevTools';
 import configureStore from './store';
 import Api from './api';
-import { clientInfoUpdated } from 'containers/App/actions'
+import 'font-awesome/css/font-awesome.css';
 import './index.css';
 
 const apiUrl = process.env.API_URL || '/api/';

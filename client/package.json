@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "font-awesome": "^4.7.0",
     "history": "^4.6.1",
     "immutable": "^3.8.1",
+    "material-ui": "^0.18.1",
     "normalizr": "^3.2.3",
     "ramda": "^0.23.0",
     "react": "^15.5.4",

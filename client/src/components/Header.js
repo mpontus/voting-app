@@ -29,8 +29,7 @@ function getStyles(muiTheme) {
 
     return {
         toolbar: {
-            paddingLeft: desktopGutter,
-            paddingRight: desktopGutter,
+            marginBottom: 24,
         },
         title: {
             paddingRight: 0,
@@ -51,7 +50,7 @@ const Header = ({ muiTheme }) => {
     console.log(styles.titleLink);
 
     return (
-        <Toolbar>
+        <Toolbar style={styles.toolbar}>
             <ToolbarGroup>
                 <ToolbarTitle
                     text={

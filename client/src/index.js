@@ -15,14 +15,23 @@ const history = createHistory();
 
 const store = configureStore(api, history);
 
-api.init().then(() => {
+const render = Component => {
     ReactDOM.render(
         <Provider store={store}>
             <ConnectedRouter history={history}>
-                <App />
+                <Component />
             </ConnectedRouter>
         </Provider>,
         document.getElementById('root'),
-    );
+    )
+};
+
+api.init().then(() => {
+    render(App);
 });
 
+
+
+if (module.hot) {
+    module.hot.accept('./containers/App', () => { render(App) })
+}

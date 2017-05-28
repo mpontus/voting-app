@@ -1,8 +1,7 @@
 import React from 'react';
-import { compose, withState, withHandlers } from 'recompose';
+import { compose, pure, withState, withHandlers } from 'recompose';
 import { TextField } from 'material-ui';
 import { muiThemeable } from 'material-ui/styles';
-
 
 function getStyles(muiTheme, props) {
     const {
@@ -49,11 +48,6 @@ function getStyles(muiTheme, props) {
 }
 
 const enhance = compose(
-    withState('focused', 'setFocused', false),
-    withHandlers({
-        onFocus: ({ setFocused }) => () => setFocused(true),
-        onBlur:  ({ setFocused }) => () => setFocused(false),
-    }),
     muiThemeable(),
 );
 
@@ -63,10 +57,9 @@ const OptionInput = enhance((props) => {
         onFocus,
         onBlur,
         number,
-        focused, // eslint-disable-line no-unused-vars
         ...rest
     } = props;
-    const styles = getStyles(muiTheme, props);
+    const styles = getStyles(muiTheme, props)
 
     return (
         <div style={styles.root}>

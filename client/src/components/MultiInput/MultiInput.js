@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { repeat } from 'ramda';
+import Row from './Row';
 import LineInput from './LineInput';
 
 // TODO: Handle backspace and delete keys
@@ -11,7 +12,7 @@ export default class MultiInput extends Component {
         onChangeLine: PropTypes.func,
         onRemoveLine: PropTypes.func,
         onAddLine: PropTypes.func,
-        renderRow: PropTypes.func,
+        rowComponent: PropTypes.func,
     };
 
     static defaultProps = {
@@ -74,47 +75,22 @@ export default class MultiInput extends Component {
         onRemoveLine(index);
     };
 
-    renderRow = (props) => {
-        const {
-            index,
-            ...rest,
-        } = props;
-
-        let inputComponent
-
-        if (this.props.renderRow) {
-            inputComponent = (props) => this.props.renderRow({
-                index,
-                input: props,
-            })
-        }
-
-        return (
-            <LineInput
-                index={index}
-                component={inputComponent}
-                {...rest}
-            />
-        )
-    }
-
     render() {
-        const { lines, minLines } = this.props;
+        const { lines, minLines, rowComponent } = this.props;
 
         const paddedLines = [
             ...lines,
             ...repeat('', Math.max(0, minLines - lines.length)),
         ];
 
-        const RowComponent = this.renderRow;
-
         return (
             <div>
                 {paddedLines.map((line, index) => (
-                    <RowComponent
+                    <Row
                         key={index}
                         index={index}
                         value={line}
+                        component={rowComponent}
                         onChange={this.handleChange}
                         onKeyDown={this.handleKeyDown}
                         onBlur={this.handleBlur}

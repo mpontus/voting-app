@@ -5,7 +5,7 @@ import Layout from 'components/Layout';
 import HomePage from 'components/HomePage';
 import LoginPage from 'components/LoginPage';
 import ViewPollPage from 'components/ViewPollPage'
-import CreatePollPage from 'components/CreatePollPage'
+import CreatePollPage from '../CreatePollPage'
 
 const App = () => (
     <MuiThemeProvider>

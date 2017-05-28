@@ -54,7 +54,7 @@ const CreatePollPage = ({ state, changeTitle, changeOption, addOption, removeOpt
                     rowComponent={renderRow}
                 />
                 <Row style={styles.actions}>
-                    <Col xs={4} xsOffset={8}>
+                    <Col xs={12} sm={6} smOffset={6}>
                         <RaisedButton
                             label="Create Poll"
                             fullWidth={true}

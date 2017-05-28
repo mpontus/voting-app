@@ -11,6 +11,7 @@ export default class MultiInput extends Component {
         onChangeLine: PropTypes.func,
         onRemoveLine: PropTypes.func,
         onAddLine: PropTypes.func,
+        renderRow: PropTypes.func,
     };
 
     static defaultProps = {
@@ -73,6 +74,30 @@ export default class MultiInput extends Component {
         onRemoveLine(index);
     };
 
+    renderRow = (props) => {
+        const {
+            index,
+            ...rest,
+        } = props;
+
+        let inputComponent
+
+        if (this.props.renderRow) {
+            inputComponent = (props) => this.props.renderRow({
+                index,
+                input: props,
+            })
+        }
+
+        return (
+            <LineInput
+                index={index}
+                component={inputComponent}
+                {...rest}
+            />
+        )
+    }
+
     render() {
         const { lines, minLines } = this.props;
 
@@ -81,18 +106,19 @@ export default class MultiInput extends Component {
             ...repeat('', Math.max(0, minLines - lines.length)),
         ];
 
+        const RowComponent = this.renderRow;
+
         return (
             <div>
                 {paddedLines.map((line, index) => (
-                    <div key={index}>
-                        <LineInput
-                            index={index}
-                            value={line}
-                            onChange={this.handleChange}
-                            onKeyDown={this.handleKeyDown}
-                            onBlur={this.handleBlur}
-                        />
-                    </div>
+                    <RowComponent
+                        key={index}
+                        index={index}
+                        value={line}
+                        onChange={this.handleChange}
+                        onKeyDown={this.handleKeyDown}
+                        onBlur={this.handleBlur}
+                    />
                 ))}
             </div>
         )

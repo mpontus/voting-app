@@ -8,6 +8,7 @@ export default class LineInput extends Component {
         onChange: PropTypes.func.isRequired,
         onKeyDown: PropTypes.func.isRequired,
         onBlur: PropTypes.func.isRequired,
+        component: PropTypes.func,
     };
 
     handleKeyDown = (event) => {
@@ -32,16 +33,18 @@ export default class LineInput extends Component {
         const {
             index,
             value,
-            ...rest
+            component,
         } = this.props;
 
-        return (
-            <input
-                value={value}
-                onKeyDown={this.handleKeyDown}
-                onChange={this.handleChange}
-                onBlur={this.handleBlur}
-            />
-        )
+        const inputProps = {
+            value,
+            onKeyDown: this.handleKeyDown,
+            onChange: this.handleChange,
+            onBlur: this.handleBlur,
+        };
+
+        const inputComponent = component || 'input';
+
+        return React.createElement(inputComponent, inputProps);
     }
 }

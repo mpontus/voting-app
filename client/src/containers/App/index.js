@@ -1,11 +1,14 @@
 import React from 'react'
 import { Switch, Route } from 'react-router-dom';
 import { MuiThemeProvider } from 'material-ui';
-import Layout from 'components/Layout';
-import HomePage from 'components/HomePage';
-import LoginPage from 'components/LoginPage';
-import ViewPollPage from 'components/ViewPollPage'
+import injectTapEventPlugin from 'react-tap-event-plugin';
+import Layout from '../../components/Layout';
+import HomePage from '../../components/HomePage';
+import LoginPage from '../../components/LoginPage';
+import ViewPollPage from '../../components/ViewPollPage'
 import CreatePollPage from '../CreatePollPage'
+
+injectTapEventPlugin();
 
 const App = () => (
     <MuiThemeProvider>

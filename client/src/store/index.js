@@ -1,7 +1,6 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import { routerMiddleware as createRouterMiddleware } from 'react-router-redux';
-import DevTools from 'containers/DevTools';
 import reducer from './reducer';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -15,11 +14,11 @@ export default function configureStore(api, history, initialState) {
         routerMiddleware
     );
 
-    const enhancers = composeEnhancers(
+    const enhancer = composeEnhancers(
         middleware,
     );
 
-    const store = createStore(reducer, initialState, enhancers);
+    const store = createStore(reducer, initialState, enhancer);
 
     if (module.hot) {
         module.hot.accept('./reducer', () => {

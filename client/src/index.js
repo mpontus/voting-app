@@ -3,11 +3,14 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux';
 import createHistory from 'history/createBrowserHistory'
+import injectTapEventPlugin from 'react-tap-event-plugin';
 import App from './containers/App';
 import configureStore from './store';
 import Api from './api';
 import 'font-awesome/css/font-awesome.css';
 import './index.css';
+
+injectTapEventPlugin();
 
 const apiUrl = process.env.API_URL || '/api/';
 const api = new Api(apiUrl);

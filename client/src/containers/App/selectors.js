@@ -16,14 +16,7 @@ export const makeGetPoll = () => createSelector(
     [getEntities, getProps],
     (entities, props) => {
         const { id } = props;
-        let poll = denormalize(id, pollSchema, entities);
 
-        console.log(
-            id,
-            entities.toJS(),
-            poll
-        );
-
-        return poll;
+        return denormalize(id, pollSchema, entities);
     }
 );

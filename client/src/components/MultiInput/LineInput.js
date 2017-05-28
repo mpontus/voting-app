@@ -31,7 +31,6 @@ export default class LineInput extends Component {
 
     render() {
         const {
-            index,
             value,
             component,
         } = this.props;

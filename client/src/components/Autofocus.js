@@ -30,4 +30,6 @@ class Autofocus extends Component {
     }
 }
 
+Autofocus.propTypes = propTypes;
+
 export default Autofocus;

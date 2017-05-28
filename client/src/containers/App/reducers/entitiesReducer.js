@@ -1,5 +1,4 @@
-import { Map, fromJS } from 'immutable'
-import { POLL_LOADED, POLLS_LOADED } from '../constants';
+import { Map } from 'immutable'
 import { ENTITIES_FOR_PAGE_LOADED } from '../../PollPage/constants';
 import {
     ENTITIES_LOADED as ENTITIES_FOR_HOME_PAGE_LOADED,
@@ -16,7 +15,8 @@ export default (state = Map(), action) => {
                 entities,
             );
         }
-    }
 
-    return state;
+        default:
+            return state;
+    }
 }

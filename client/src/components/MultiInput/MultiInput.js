@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { repeat } from 'ramda';
 import Row from './Row';
-import LineInput from './LineInput';
 
 // TODO: Handle backspace and delete keys
 export default class MultiInput extends Component {

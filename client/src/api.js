@@ -157,7 +157,7 @@ export default class Api {
         const url = this.getResourceUrl(`polls/${id}`);
         const accessToken = this.tokenStorage.getAccessToken();
 
-        return window.fetch(this.getResourceUrl(`polls/${id}`), {
+        return window.fetch(url, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
@@ -181,7 +181,7 @@ export default class Api {
         const url = this.getResourceUrl(`polls/${pollId}/votes`);
         const accessToken = this.tokenStorage.getAccessToken();
 
-        this.fetch(`${this.apiUrl}/polls/${pollId}/votes`, {
+        this.fetch(url, {
             method: 'POST',
             body: JSON.stringify({
                 option: choice,

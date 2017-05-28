@@ -1,6 +1,5 @@
 import React from 'react';
 import { compose, withReducer, withProps } from 'recompose'
-import { map, partial } from 'ramda';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import { RaisedButton, TextField } from 'material-ui'
 import Autofocus from '../../components/Autofocus';

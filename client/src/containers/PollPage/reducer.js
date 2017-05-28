@@ -11,7 +11,8 @@ export default (state = initialState, action) => {
             return state.set('fetching', true);
         case ENTITIES_FOR_PAGE_LOADED:
             return state.set('fetching', false);
+        default:
+            return state;
     }
 
-    return state;
 }

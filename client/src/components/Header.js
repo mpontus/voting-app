@@ -7,8 +7,6 @@ import {
     ToolbarSeparator,
     ToolbarTitle,
     ToolbarGroup,
-    DropDownMenu,
-    MenuItem,
 } from 'material-ui';
 
 import ActionList from 'material-ui/svg-icons/action/list'
@@ -16,12 +14,7 @@ import FontIcon from 'material-ui/FontIcon';
 import { muiThemeable } from 'material-ui/styles'
 
 function getStyles(muiTheme) {
-    console.log(muiTheme);
-
     const {
-        spacing: {
-            desktopGutter,
-        },
         palette: {
             secondaryTextColor,
         },
@@ -46,8 +39,6 @@ function getStyles(muiTheme) {
 
 const Header = ({ muiTheme }) => {
     const styles = getStyles(muiTheme);
-
-    console.log(styles.titleLink);
 
     return (
         <Toolbar style={styles.toolbar}>

@@ -1,21 +1,13 @@
 import React from 'react';
-import { compose, pure, withState, withHandlers } from 'recompose';
 import { TextField } from 'material-ui';
 import { muiThemeable } from 'material-ui/styles';
 
-function getStyles(muiTheme, props) {
+function getStyles(muiTheme) {
     const {
         palette: {
-            textColor,
-            disabledColor,
-            canvasColor,
             borderColor,
         },
-        avatar: {
-            backgroundColor,
-        },
     } = muiTheme;
-    const { focused } = props;
 
     return {
         root: {
@@ -47,9 +39,7 @@ function getStyles(muiTheme, props) {
     }
 }
 
-const enhance = compose(
-    muiThemeable(),
-);
+const enhance = muiThemeable();
 
 const OptionInput = enhance((props) => {
     const {

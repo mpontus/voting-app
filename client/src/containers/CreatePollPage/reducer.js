@@ -13,8 +13,6 @@ export const initialState = fromJS({
 });
 
 export default function (state = initialState, action) {
-    console.log(action);
-
     switch (action.type) {
         case CHANGE_TITLE: {
             const { value } = action.payload;
@@ -28,20 +26,16 @@ export default function (state = initialState, action) {
             return state.setIn(['options', index], value);
         }
 
-        case ADD_OPTION: {
-
-            const newState = state.update('options', options => options.push(''));
-
-            console.log(state.toJS(), newState.toJS())
-
-
-            return newState
-        }
+        case ADD_OPTION:
+            return state.update('options', options => options.push(''))
 
         case REMOVE_OPTION: {
             const { index } = action.payload;
 
             return state.update('options', options => options.delete(index))
         }
+
+        default:
+            return state;
     }
 }

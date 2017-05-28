@@ -13,9 +13,11 @@ const pollsReducer = (state = List(), action) => {
 
             return List(ids);
         }
+
+        default:
+            return state;
     }
 
-    return state;
 };
 
 const fetchingReducer = (state = false, action) => {
@@ -24,9 +26,9 @@ const fetchingReducer = (state = false, action) => {
             return true;
         case ENTITIES_LOADED:
             return false;
+        default:
+            return state;
     }
-
-    return state;
 };
 
 export default combineReducers({

@@ -17,8 +17,6 @@ import { muiThemeable } from 'material-ui/styles'
 import MediaQuery from 'react-responsive';
 
 function getStyles(muiTheme) {
-    console.log(muiTheme);
-
     const {
         palette: {
             secondaryTextColor,

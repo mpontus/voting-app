@@ -41,7 +41,7 @@ const CreatePollPage = ({ state, changeTitle, changeOption, addOption, removeOpt
                 <Autofocus
                     component={TextField}
                     fullWidth={true}
-                    hintText="Enter your question"
+                    hintText="Ask your question"
                     value={state.get('title')}
                     onChange={(event) => changeTitle(event.target.value)}
                 />

@@ -4,7 +4,7 @@ import { MuiThemeProvider } from 'material-ui';
 import Layout from '../../components/Layout';
 import HomePage from '../../containers/HomePage';
 import LoginPage from '../../components/LoginPage';
-import ViewPollPage from '../../components/ViewPollPage'
+import ViewPollPage from '../../containers/ViewPollPage'
 import CreatePollPage from '../CreatePollPage'
 
 

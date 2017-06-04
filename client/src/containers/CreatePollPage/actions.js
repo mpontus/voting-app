@@ -1,25 +1,41 @@
 import {
-    CHANGE_TITLE,
-    CHANGE_OPTION,
-    ADD_OPTION,
-    REMOVE_OPTION,
+    POLL_CREATE_REQUEST,
+    POLL_CREATE_RESULT,
 } from './constants'
 
-export const changeTitle = (value) => ({
-    type: CHANGE_TITLE,
-    payload: { value },
+export const createPoll = ({ title, options }) => async (dispatch, getState, api) => {
+    dispatch(pollCreateRequest({ title, options }));
+
+    let poll;
+    try {
+        poll = await api.createPoll({ title, options });
+    } catch (error) {
+        dispatch(pollCreateResult(error));
+
+        return Promise.reject(error);
+    }
+
+    dispatch(pollCreateResult(poll));
+};
+
+export const pollCreateRequest = ({ title, options }) => ({
+    type: POLL_CREATE_REQUEST,
+    payload: { title, options },
 });
 
-export const changeOption = (index, value) => ({
-    type: CHANGE_OPTION,
-    payload: { index, value },
-});
+export const pollCreateResult = (payload) => {
+    if (payload instanceof Error) {
+        return {
+            type: POLL_CREATE_REQUEST,
+            error: true,
+            payload,
+        };
+    }
 
-export const addOption = () => ({
-    type: ADD_OPTION,
-});
-
-export const removeOption = (index) => ({
-    type: REMOVE_OPTION,
-    payload: { index },
-});
+    return {
+        type: POLL_CREATE_RESULT,
+        payload: {
+            poll: payload,
+        },
+    };
+}

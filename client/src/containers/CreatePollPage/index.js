@@ -1,67 +1,32 @@
 import React from 'react';
-import { compose, withReducer, withProps } from 'recompose'
+import { withRouter } from 'react-router';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+import { compose, withProps } from 'recompose';
 import { Grid, Row, Col } from 'react-flexbox-grid';
-import { RaisedButton, TextField } from 'material-ui'
-import Autofocus from '../../components/Autofocus';
-import OptionInput from '../../components/OptionInput';
-import MultiInput from '../../components/MultiInput/index';
-import reducer, { initialState } from './reducer';
-import { changeTitle, changeOption, addOption, removeOption } from './actions';
+import CreatePollForm from '../CreatePollForm';
+import { makeGetFetching } from './selectors';
+import { createPoll } from './actions';
 
-const styles = {
-    actions: {
-        marginTop: 30,
-    },
-};
+const mapStateToProps = () => createStructuredSelector({
+    fetching: makeGetFetching(),
+});
 
 const enhance = compose(
-    withReducer('state', 'dispatch', reducer, initialState),
-    withProps(({ dispatch }) => ({
-        changeTitle: (value) => dispatch(changeTitle(value)),
-        changeOption: (index, value) => dispatch(changeOption(index, value)),
-        addOption: () => dispatch(addOption()),
-        removeOption: (index) => dispatch(removeOption(index)),
+    connect(mapStateToProps, { createPoll }),
+    withRouter,
+    withProps(({ createPoll, history: { push } }) => ({
+        handleSubmit: (values) => createPoll(values).then(() => {
+            push('/');
+        })
     }))
 );
 
-const renderRow = ({ index, ...input }) => {
-    return (
-        <OptionInput
-            number={index + 1}
-            name={`options[${index}]`}
-            {...input}
-        />
-    );
-};
-
-const CreatePollPage = ({ state, changeTitle, changeOption, addOption, removeOption }) => (
+const CreatePollPage = ({ submitting, handleSubmit }) => (
     <Grid>
         <Row>
             <Col xs={8} xsOffset={2} sm={8} smOffset={2} md={6} mdOffset={3}>
-                <Autofocus
-                    component={TextField}
-                    fullWidth={true}
-                    hintText="Ask your question"
-                    value={state.get('title')}
-                    onChange={(event) => changeTitle(event.target.value)}
-                />
-                <MultiInput
-                    lines={state.get('options').toJS()}
-                    minLines={2}
-                    onAddLine={addOption}
-                    onRemoveLine={removeOption}
-                    onChangeLine={changeOption}
-                    rowComponent={renderRow}
-                />
-                <Row style={styles.actions}>
-                    <Col xs={12} sm={6} smOffset={6}>
-                        <RaisedButton
-                            label="Create Poll"
-                            fullWidth={true}
-                        />
-                    </Col>
-                </Row>
-
+                <CreatePollForm onSubmit={handleSubmit} />
             </Col>
         </Row>
     </Grid>

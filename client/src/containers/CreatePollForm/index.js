@@ -24,7 +24,8 @@ const enhance = compose(
         removeOption: (index) => dispatch(removeOption(index)),
     })),
     withHandlers({
-        handleSubmit: ({ onSubmit, state: { title, options }}) => (event) => {
+        handleSubmit: ({ onSubmit, state }) => (event) => {
+            const { title, options } = state.toJS();
             event.preventDefault();
             onSubmit({ title, options });
         },

@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import { denormalize } from 'normalizr';
-import { getEntities } from 'containers/App/selectors';
-import { pollSchema } from 'containers/App/schemas';
+import { getEntities } from '../App/selectors';
+import { pollSchema } from '../App/schemas';
 
 const getHomePage = state => state.get('homePage');
 

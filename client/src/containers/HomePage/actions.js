@@ -1,5 +1,5 @@
 import { normalize } from 'normalizr'
-import { pollSchema } from 'containers/App/schemas'
+import { pollSchema } from '../App/schemas'
 
 import {
     HOME_PAGE_VISITTED,

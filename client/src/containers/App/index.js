@@ -2,7 +2,7 @@ import React from 'react'
 import { Switch, Route } from 'react-router-dom';
 import { MuiThemeProvider } from 'material-ui';
 import Layout from '../../components/Layout';
-import HomePage from '../../components/HomePage';
+import HomePage from '../../containers/HomePage';
 import LoginPage from '../../components/LoginPage';
 import ViewPollPage from '../../components/ViewPollPage'
 import CreatePollPage from '../CreatePollPage'

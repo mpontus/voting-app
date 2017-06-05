@@ -6,6 +6,7 @@ import HomePage from '../../containers/HomePage';
 import LoginPage from '../../components/LoginPage';
 import ViewPollPage from '../../containers/ViewPollPage'
 import CreatePollPage from '../CreatePollPage'
+import RegistrationPage from '../RegistrationPage'
 
 
 const App = () => (
@@ -16,6 +17,7 @@ const App = () => (
                 <Route exact path="/login" component={LoginPage} />
                 <Route exact path="/poll/:id" component={ViewPollPage} />
                 <Route exact path="/new" component={CreatePollPage} />
+                <Route exact path="/signup" component={RegistrationPage} />
             </Switch>
         </Layout>
     </MuiThemeProvider>

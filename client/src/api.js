@@ -76,7 +76,7 @@ export default class Api {
         tokenStorage = new TokenStorage(),
     } = {}) {
         this.apiUrl = normalizeUrl(apiUrl);
-        this.fetchImplementation = fetch;
+        this._fetch = fetch;
         this.tokenStorage = tokenStorage;
     }
 
@@ -88,17 +88,27 @@ export default class Api {
         return this.getAnonymousToken();
     }
 
-    fetch(input, init) {
-        return this.fetchImplementation(
-            input,
-            {
-                ...init,
-                headers: {
-                    ...init.headers,
-                    'Content-Type': 'application/json',
-                }
-            }
-        )
+    async fetch(input, _init) {
+        const init = R.set(
+            R.lensPath(['headers', 'Content-Type']),
+            'application/json',
+            _init,
+        );
+
+        const response = await this._fetch(input, init);
+        const body = await response.json();
+        const code = response.status;
+
+        if (!(code >= 200 && code < 300)) {
+            const error = new Error(`Request failed with status ${code}`);
+
+            error.code = code;
+            error.response = body;
+
+            return Promise.reject(error);
+        }
+
+        return body;
     }
 
     getResourceUrl(resource, query) {
@@ -111,7 +121,7 @@ export default class Api {
         const result = await this.fetch(this.getResourceUrl('token'), {
             method: 'POST',
             body: JSON.stringify({ grant_type: 'client_credentials' }),
-        }).then(response => response.json());
+        });
 
         this.tokenStorage.setAccessToken(result.access_token);
         this.tokenStorage.setRefreshToken(null);
@@ -127,7 +137,7 @@ export default class Api {
                 username,
                 password,
             }),
-        }).then(response => response.json());
+        });
 
         this.tokenStorage.setAccessToken(result.access_token);
         this.tokenStorage.setRefreshToken(result.refresh_token);
@@ -135,7 +145,7 @@ export default class Api {
         return result;
     }
 
-    register(username, password) {
+    register({ username, password }) {
         return this.fetch(this.getResourceUrl('users'), {
             method: 'POST',
             body: JSON.stringify({ username, password }),
@@ -150,18 +160,18 @@ export default class Api {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
-        }).then(response => response.json());
+        });
     }
 
     getPoll(id) {
         const url = this.getResourceUrl(`polls/${id}`);
         const accessToken = this.tokenStorage.getAccessToken();
 
-        return window.fetch(url, {
+        return this.fetch(url, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
-        }).then(response => response.json());
+        });
     }
 
     createPoll(values) {
@@ -174,7 +184,7 @@ export default class Api {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             }
-        }).then(response => response.json());
+        });
     }
 
     submitVote(pollId, choice) {

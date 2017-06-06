@@ -20,3 +20,23 @@ export const makeGetPoll = () => createSelector(
         return denormalize(id, pollSchema, entities);
     }
 );
+
+const getNotifications = createSelector(
+    getGlobal,
+    global => global.get('notifications'),
+);
+
+export const makeGetNotifications = () => createSelector(
+    getNotifications,
+    notifications => {
+        const {
+            messageIds,
+            messagesById,
+        } = notifications.toObject();
+
+        return messageIds.map((id) => ({
+            id,
+            text: messagesById.get(id),
+        }));
+    }
+);

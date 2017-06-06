@@ -1,2 +1,3 @@
-export { default as entitiesReducer } from './entitiesReducer'
-export { default as userReducer } from './userReducer'
+export { default as entities } from './entities'
+export { default as user } from './user'
+export { default as notifications } from './notifications'

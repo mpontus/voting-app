@@ -23,13 +23,7 @@ const enhance = compose(
 );
 
 const CreatePollPage = ({ submitting, handleSubmit }) => (
-    <Grid>
-        <Row>
-            <Col xs={8} xsOffset={2} sm={8} smOffset={2} md={6} mdOffset={3}>
-                <CreatePollForm onSubmit={handleSubmit} />
-            </Col>
-        </Row>
-    </Grid>
+    <CreatePollForm onSubmit={handleSubmit} />
 );
 
 export default enhance(CreatePollPage);

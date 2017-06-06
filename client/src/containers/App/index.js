@@ -3,10 +3,11 @@ import { Switch, Route } from 'react-router-dom';
 import { MuiThemeProvider } from 'material-ui';
 import Layout from '../../components/Layout';
 import HomePage from '../../containers/HomePage';
-import LoginPage from '../../components/LoginPage';
+import LoginPage from '../../containers/LoginPage';
 import ViewPollPage from '../../containers/ViewPollPage'
 import CreatePollPage from '../CreatePollPage'
 import RegistrationPage from '../RegistrationPage'
+import Notifications from './Notifications';
 
 
 const App = () => (
@@ -19,6 +20,7 @@ const App = () => (
                 <Route exact path="/new" component={CreatePollPage} />
                 <Route exact path="/signup" component={RegistrationPage} />
             </Switch>
+            <Notifications />
         </Layout>
     </MuiThemeProvider>
 );

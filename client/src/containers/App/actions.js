@@ -5,6 +5,7 @@ import {
     LOGOUT,
     POLL_LOADED,
     POLLS_LOADED,
+    NOTIFICATION_DISMISSED,
 } from './constants'
 
 const pollSchema = new schema.Entity('polls');
@@ -47,3 +48,8 @@ export const pollsLoaded = (payload) => {
         },
     };
 };
+
+export const notificationDismissed = (id) => ({
+    type: NOTIFICATION_DISMISSED,
+    payload: { id },
+});

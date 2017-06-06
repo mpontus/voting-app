@@ -1,11 +1,13 @@
 import { combineReducers } from 'redux-immutable';
 
 import {
-    userReducer,
-    entitiesReducer,
+    user,
+    entities,
+    notifications,
 } from './reducers'
 
 export default combineReducers({
-    user: userReducer,
-    entities: entitiesReducer,
+    user,
+    entities,
+    notifications,
 })

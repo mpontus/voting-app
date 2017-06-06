@@ -6,19 +6,20 @@ import {
 export const login = ({ username, password }) => async (dispatch, getState, api) => {
     dispatch(loginRequest({ username, password }));
 
-    let user;
+    let response;
     try {
-        user = await api.login(username, password);
+        response = await api.login(username, password);
     } catch (error) {
-        console.log('err', error);
         dispatch(loginResult(error));
 
         return Promise.reject(error);
     }
 
-    dispatch(loginResult(user));
+    const { access_token: accessToken } = response;
 
-    return Promise.resolve(user);
+    dispatch(loginResult({ accessToken }));
+
+    // return Promise.resolve(accessToken);
 };
 
 export const loginRequest = ({ username, password }) => ({
@@ -35,10 +36,12 @@ export const loginResult = (payload) => {
         };
     }
 
+    const { accessToken } = payload;
+
     return {
         type: LOGIN_RESULT,
         payload: {
-            user: payload,
+            accessToken,
         },
     };
 };

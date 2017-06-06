@@ -6,6 +6,7 @@
     "font-awesome": "^4.7.0",
     "history": "^4.6.1",
     "immutable": "^3.8.1",
+    "jwt-decode": "^2.2.0",
     "material-ui": "^0.18.1",
     "normalizr": "^3.2.3",
     "ramda": "^0.24.0",

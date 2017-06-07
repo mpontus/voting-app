@@ -40,3 +40,8 @@ export const makeGetNotifications = () => createSelector(
         }));
     }
 );
+
+export const makeGetUser = () => createSelector(
+    getGlobal,
+    global => global.get('user'),
+);

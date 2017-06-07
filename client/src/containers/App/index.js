@@ -1,6 +1,7 @@
 import React from 'react'
 import { Switch, Route } from 'react-router-dom';
 import { MuiThemeProvider } from 'material-ui';
+import Header from '../Header';
 import Layout from '../../components/Layout';
 import HomePage from '../../containers/HomePage';
 import LoginPage from '../../containers/LoginPage';
@@ -12,7 +13,7 @@ import Notifications from './Notifications';
 
 const App = () => (
     <MuiThemeProvider>
-        <Layout>
+        <Layout header={<Header />}>
             <Switch>
                 <Route exact path="/" component={HomePage} />
                 <Route exact path="/login" component={LoginPage} />

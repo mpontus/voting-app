@@ -2,7 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import {
+    AppBar,
+    IconMenu,
+    MenuItem,
     Toolbar,
+    FlatButton,
     RaisedButton,
     ToolbarSeparator,
     ToolbarTitle,
@@ -12,6 +16,7 @@ import {
 
 import ActionList from 'material-ui/svg-icons/action/list'
 import ContentAdd from 'material-ui/svg-icons/content/add'
+import NavigationMoreVert from 'material-ui/svg-icons/navigation/more-vert'
 import FontIcon from 'material-ui/FontIcon';
 import { muiThemeable } from 'material-ui/styles'
 import MediaQuery from 'react-responsive';
@@ -28,12 +33,13 @@ function getStyles(muiTheme) {
 
     return {
         toolbar: {
-            paddingLeft: desktopGutter * 2,
-            paddingRight: desktopGutter * 2,
+            paddingLeft: desktopGutter,
+            paddingRight: desktopGutter,
             marginBottom: 24,
         },
         title: {
             paddingRight: 0,
+            paddingLeft: desktopGutter,
         },
         titleLink: {
             color: secondaryTextColor,
@@ -46,108 +52,38 @@ function getStyles(muiTheme) {
     };
 }
 
-const Header = ({ muiTheme }) => {
+const Header = ({ muiTheme, showLogin, username, onLogout }) => {
     const styles = getStyles(muiTheme);
 
     return (
-        <div>
-            <MediaQuery minDeviceWidth={900}>
-                <Toolbar style={styles.toolbar}>
-                    <ToolbarGroup firstChild={true}>
-                        <ToolbarTitle
-                            text={
-                                <Link
-                                    to="/"
-                                    style={styles.titleLink}
-                                >
-                                    Voting App
-                                </Link>
-                            }
-                            style={styles.title}
+        <AppBar
+            title="Voting App"
+            showMenuIconButton={false}
+            iconElementRight={
+                showLogin ? (
+                    <FlatButton
+                        containerElement={<Link to="/login"/>}
+                        icon={<FontIcon className="fa fa-sign-in"/>}
+                        label="Log in"
+                    />
+                ) : (
+                    <IconMenu
+                        iconButtonElement={
+                            <IconButton><NavigationMoreVert /></IconButton>
+                        }
+                        targetOrigin={{horizontal: 'right', vertical: 'top'}}
+                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                    >
+                        <MenuItem primaryText="Refresh" />
+                        <MenuItem primaryText="Help" />
+                        <MenuItem
+                            primaryText="Sign out"
+                            onTouchTap={onLogout}
                         />
-
-                        <ToolbarSeparator />
-
-                        <RaisedButton
-                            primary={true}
-                            label="Create a Poll"
-                            containerElement={
-                                <Link to="/new"/>
-                            }
-                            icon={<ActionList />}
-                        />
-                    </ToolbarGroup>
-
-                    <ToolbarGroup>
-                        <ToolbarTitle
-                            text="Sign In"
-                        />
-                        <RaisedButton
-                            containerElement={
-                                <Link to="/login"/>
-                            }
-                            icon={<FontIcon className="fa fa-lock"/>}
-                            style={styles.secondaryButton}
-                        />
-                        <RaisedButton
-                            containerElement={
-                                <Link to="/login"/>
-                            }
-                            icon={<FontIcon className="fa fa-github"/>}
-                            style={styles.secondaryButton}
-                        />
-                    </ToolbarGroup>
-                </Toolbar>
-            </MediaQuery>
-            <MediaQuery maxDeviceWidth={900}>
-                <Toolbar style={styles.toolbar}>
-                    <ToolbarGroup firstChild={true}>
-                        <ToolbarTitle
-                            text={
-                                <div>
-                                    <Link
-                                        to="/"
-                                        style={styles.titleLink}
-                                    >
-                                        Voting App
-                                    </Link>
-                                </div>
-
-                            }
-                            style={styles.title}
-                        />
-                    </ToolbarGroup>
-
-                    <ToolbarGroup lastChild={true}>
-                        <IconButton
-                            containerElement={
-                                <Link to="/new"/>
-                            }
-                        >
-                            <ContentAdd />
-                        </IconButton>
-
-                        <IconButton
-                            disabled
-                            containerElement={
-                                <Link to="/login"/>
-                            }
-                            style={styles.secondaryButton}
-                        >
-                            <FontIcon className="fa fa-github"/>
-                        </IconButton>
-                        <IconButton
-                            containerElement={
-                                <Link to="/login"/>
-                            }
-                            style={styles.secondaryButton}
-                        >
-                            <FontIcon className="fa fa-lock"/>
-                        </IconButton>
-                    </ToolbarGroup>
-                </Toolbar>
-            </MediaQuery>
-        </div>
+                    </IconMenu>
+                )
+            }
+        />
     );
 };
 

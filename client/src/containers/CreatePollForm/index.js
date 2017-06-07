@@ -1,6 +1,6 @@
 import React from 'react';
 import { compose, withReducer, withProps, withHandlers } from 'recompose'
-import { Grid, Row, Col } from 'react-flexbox-grid';
+import { Row, Col } from 'react-flexbox-grid';
 import { RaisedButton, TextField } from 'material-ui'
 import Autofocus from '../../components/Autofocus';
 import OptionInput from '../../components/OptionInput';

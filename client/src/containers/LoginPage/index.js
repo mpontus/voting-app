@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { compose, withHandlers } from 'recompose';
 import { withRouter } from 'react-router'
-import { SubmissionError } from 'redux-form/immutable'
 import LoginForm from '../LoginForm';
 import { login } from './actions';
 

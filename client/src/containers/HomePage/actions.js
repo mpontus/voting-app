@@ -6,24 +6,6 @@ import {
     ENTITIES_LOADED,
 } from './constants'
 
-export const homePageVisitted = () => async (dispatch, getState, api) => {
-    dispatch({
-        type: HOME_PAGE_VISITTED,
-    });
-
-    let polls;
-
-    try {
-        polls = await api.getPolls()
-    } catch (error) {
-        dispatch(entitiesForHomePageLoaded(error));
-
-        return;
-    }
-
-    dispatch(entitiesForHomePageLoaded(polls));
-};
-
 export const entitiesForHomePageLoaded = (payload) => {
     if (payload instanceof Error) {
         return {
@@ -45,4 +27,23 @@ export const entitiesForHomePageLoaded = (payload) => {
             total,
         }
     };
-}
+};
+
+
+export const homePageVisitted = () => async (dispatch, getState, api) => {
+    dispatch({
+        type: HOME_PAGE_VISITTED,
+    });
+
+    let polls;
+
+    try {
+        polls = await api.getPolls()
+    } catch (error) {
+        dispatch(entitiesForHomePageLoaded(error));
+
+        return;
+    }
+
+    dispatch(entitiesForHomePageLoaded(polls));
+};

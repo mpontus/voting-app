@@ -3,8 +3,6 @@ import {
     CHANGE_OPTION,
     ADD_OPTION,
     REMOVE_OPTION,
-    POLL_CREATE_REQUEST,
-    POLL_CREATE_RESULT,
 } from './constants'
 
 export const changeTitle = (value) => ({

@@ -3,7 +3,6 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { compose, withProps } from 'recompose';
-import { Grid, Row, Col } from 'react-flexbox-grid';
 import CreatePollForm from '../CreatePollForm';
 import { makeGetFetching } from './selectors';
 import { createPoll } from './actions';

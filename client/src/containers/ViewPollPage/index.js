@@ -40,8 +40,8 @@ class ViewPollPage extends Component {
             <div>
                 <h2>{title}</h2>
                 <ul>
-                    {options.map((option, index) => (
-                        <li>{option}</li>
+                    {options.map((option) => (
+                        <li key={option}>{option}</li>
                     ))}
                 </ul>
             </div>

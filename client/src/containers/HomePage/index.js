@@ -11,6 +11,16 @@ import {
 
 import { homePageVisitted } from './actions';
 
+const propTypes = {
+    homePageVisitted: PropTypes.func.isRequired,
+    fetching: PropTypes.bool.isRequired,
+    polls: PropTypes.array,
+};
+
+const defaultProps = {
+    polls: null,
+};
+
 class HomePage extends Component {
     componentDidMount() {
         this.props.homePageVisitted();
@@ -36,6 +46,9 @@ class HomePage extends Component {
         )
     }
 }
+
+HomePage.propTypes = propTypes;
+HomePage.defaultProps = defaultProps;
 
 const makeMapStateToProps = () => {
     const getPolls = makeGetPolls();

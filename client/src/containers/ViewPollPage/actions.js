@@ -3,6 +3,8 @@ import { pollSchema } from '../App/schemas';
 import {
     FETCH_POLL_REQUEST,
     FETCH_POLL_RESULT,
+    VOTE_REQUEST,
+    VOTE_RESULT,
 } from './constants';
 
 export const fetchPollRequest = (id) => ({
@@ -44,4 +46,41 @@ export const fetchPoll = (id) => async (dispatch, getState, api) => {
     dispatch(fetchPollResult(poll));
 
     return poll;
+};
+
+export const voteRequest = (pollId, option) => ({
+    type: VOTE_REQUEST,
+    payload: {
+        pollId,
+        option,
+    },
+});
+
+export const voteResult = (payload) => {
+    if (payload instanceof Error) {
+        return {
+            type: VOTE_RESULT,
+            error: true,
+            payload,
+        }
+    }
+
+    return {
+        type: VOTE_RESULT,
+        payload: {},
+    };
+};
+
+export const vote = (pollId, option) => async (dispatch, getState, api) => {
+    dispatch(voteRequest(pollId, option));
+
+    try {
+        await api.vote(pollId, option);
+    } catch (error) {
+        dispatch(voteResult(error));
+
+        return;
+    }
+
+    dispatch(voteResult());
 };

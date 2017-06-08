@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { compose, withProps } from 'recompose';
 import { Menu, MenuItem } from 'material-ui';
 import { makeGetPoll } from './selectors';
-import { fetchPoll } from './actions';
+import { fetchPoll, vote } from './actions';
 
 const makeMapStateToProps = () => (state, props) => {
     const { id } = props;
@@ -18,7 +18,7 @@ const enhance = compose(
     withProps(({ match }) => ({
         id: match.params.id,
     })),
-    connect(makeMapStateToProps(), { fetchPoll }),
+    connect(makeMapStateToProps(), { fetchPoll, vote }),
 );
 
 class ViewPollPage extends Component {
@@ -26,6 +26,12 @@ class ViewPollPage extends Component {
         const { fetchPoll, id } = this.props;
 
         fetchPoll(id);
+    }
+
+    handleVote(option) {
+        const { vote, id } = this.props;
+
+        vote(id, option);
     }
 
     render() {
@@ -40,11 +46,6 @@ class ViewPollPage extends Component {
         return (
             <div>
                 <h2>{title}</h2>
-<<<<<<< Updated upstream
-                <ul>
-                    {options.map((option) => (
-                        <li key={option}>{option}</li>
-=======
                 <Menu>
                     {options.map((option) => (
                         <MenuItem
@@ -52,7 +53,6 @@ class ViewPollPage extends Component {
                             primaryText={option}
                             onClick={() => this.handleVote(option)}
                         />
->>>>>>> Stashed changes
                     ))}
                 </Menu>
             </div>

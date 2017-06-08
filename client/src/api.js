@@ -188,7 +188,7 @@ export default class Api {
         });
     }
 
-    submitVote(pollId, choice) {
+    vote(pollId, choice) {
         const url = this.getResourceUrl(`polls/${pollId}/votes`);
         const accessToken = this.tokenStorage.getAccessToken();
 

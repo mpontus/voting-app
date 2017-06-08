@@ -196,4 +196,21 @@ describe('API gateway', () => {
             expect(result).toEqual(response);
         });
     });
+
+    describe('vote', () => {
+        it('must send a request', async () => {
+            tokenStorage.getAccessToken.mockReturnValueOnce('my_token');
+
+            fetchMock.restore().mock((url, opts) => {
+                expect(url).toBe('/polls/21/votes');
+                expect(opts.method).toBe('POST');
+                expect(opts.headers.Authorization).toBe('Bearer my_token');
+                expect(JSON.parse(opts.body)).toEqual({ option: 'foo' });
+
+                return true;
+            }, {});
+
+            await api.vote(21, 'foo');
+        })
+    })
 });

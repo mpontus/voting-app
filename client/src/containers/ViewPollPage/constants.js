@@ -1,2 +1,4 @@
 export const FETCH_POLL_REQUEST = 'FETCH_POLL_REQUEST';
 export const FETCH_POLL_RESULT = 'FETCH_POLL_RESULT';
+export const VOTE_REQUEST = 'VOTE_REQUEST';
+export const VOTE_RESULT = 'VOTE_RESULT';

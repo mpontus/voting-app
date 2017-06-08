@@ -34,13 +34,13 @@
     "@kadira/storybook": "^2.21.0",
     "babel-preset-react-app": "^3.0.0",
     "enzyme": "^2.8.2",
-    "fetch-mock": "^5.10.0",
+    "fetch-mock": "^5.11.0",
     "html-webpack-plugin": "latest",
-    "nock": "^9.0.13",
     "node-fetch": "^1.6.3",
     "react-scripts": "^1.0.2",
     "react-test-renderer": "^15.5.4",
-    "webpack-dev-server": "^2.4.5"
+    "webpack-dev-server": "^2.4.5",
+    "with-fetch-mock": "^0.1.0"
   },
   "scripts": {
     "start": "react-scripts start",

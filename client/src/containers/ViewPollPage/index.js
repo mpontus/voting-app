@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose, withProps } from 'recompose';
+import { Menu, MenuItem } from 'material-ui';
 import { makeGetPoll } from './selectors';
 import { fetchPoll } from './actions';
 
@@ -39,11 +40,21 @@ class ViewPollPage extends Component {
         return (
             <div>
                 <h2>{title}</h2>
+<<<<<<< Updated upstream
                 <ul>
                     {options.map((option) => (
                         <li key={option}>{option}</li>
+=======
+                <Menu>
+                    {options.map((option) => (
+                        <MenuItem
+                            key={option}
+                            primaryText={option}
+                            onClick={() => this.handleVote(option)}
+                        />
+>>>>>>> Stashed changes
                     ))}
-                </ul>
+                </Menu>
             </div>
         )
     }

@@ -88,12 +88,13 @@ export default class Api {
         return this.getAnonymousToken();
     }
 
-    async fetch(input, _init) {
-        const init = R.set(
-            R.lensPath(['headers', 'Content-Type']),
-            'application/json',
-            _init,
-        );
+    async fetch(input, init) {
+        init = R.mergeDeepRight({
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }, init);
 
         const response = await this._fetch(input, init);
         const body = await response.json();

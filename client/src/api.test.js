@@ -1,42 +1,21 @@
-// import fetch from 'whatwg-fetch';
-import nock from 'nock';
-import fetch from 'node-fetch';
-import Api from '../src/api';
+import fetchMock from 'fetch-mock';
+import Api from './api';
 
-const API_URI = 'http://localhost:8080';
-
-const [accessToken, refreshToken] = [
-    'this_access_token',
-    'this_refresh_token',
-];
+let accessToken, refreshToken;
 
 const tokenStorage = {
     setAccessToken: jest.fn(),
-    getAccessToken: () => accessToken,
+    getAccessToken: jest.fn(),
     setRefreshToken: jest.fn(),
-    getRefreshToken: jest.fn(() => refreshToken),
+    getRefreshToken: jest.fn(),
 };
 
-const api = new Api(API_URI, {
-    fetch,
+const api = new Api('/', {
+    fetch: fetchMock.fetchMock,
     tokenStorage,
 });
 
 describe('API gateway', () => {
-    beforeAll(() => {
-        // nock.recorder.rec();
-        // nock.enableNetConnect();
-    });
-
-    afterEach(() => {
-        Array.of(
-            'setAccessToken',
-            'setRefreshToken',
-        ).forEach(method => {
-            tokenStorage[method].mockReset();
-        })
-    });
-
     describe('getAnonymousToken', () => {
         const request = {
             grant_type: 'client_credentials',
@@ -46,8 +25,17 @@ describe('API gateway', () => {
         };
         let result;
 
-        beforeEach(async () => {
-            nock(API_URI).post('/token', request).reply(200, response);
+        beforeAll(async () => {
+            fetchMock.restore().post((url, opts) => {
+                expect(url).toBe('/token');
+                expect(opts.method).toBe('POST');
+                expect(JSON.parse(opts.body)).toEqual(request);
+
+                return true;
+            }, response);
+
+            tokenStorage.setAccessToken.mockReset();
+            tokenStorage.setRefreshToken.mockReset();
 
             result = await api.getAnonymousToken();
         });
@@ -79,8 +67,17 @@ describe('API gateway', () => {
         };
         let result;
 
-        beforeEach(async () => {
-            nock(API_URI).post('/token', request).reply(200, response);
+        beforeAll(async () => {
+            fetchMock.restore().post((url, opts) => {
+                expect(url).toBe('/token');
+                expect(opts.method).toBe('POST');
+                expect(JSON.parse(opts.body)).toEqual(request);
+
+                return true;
+            }, response);
+
+            tokenStorage.setAccessToken.mockReset();
+            tokenStorage.setRefreshToken.mockReset();
 
             result = await api.login('foo', 'bar');
         });
@@ -112,10 +109,16 @@ describe('API gateway', () => {
             total: 4,
         };
 
-        it.only('must return the response', async () => {
-            nock(API_URI).get(`/polls`)
-                .matchHeader('Authorization', `Bearer ${tokenStorage.getAccessToken()}`)
-                .reply(200, response);
+        it('must return the response', async () => {
+            tokenStorage.getAccessToken.mockReturnValueOnce('my_token');
+
+            fetchMock.restore().get((url, opts) => {
+                expect(url).toBe('/polls');
+                expect(opts.method).toBe('GET');
+                expect(opts.headers.Authorization).toEqual(`Bearer my_token`);
+
+                return true;
+            }, response);
 
             const result = await api.getPolls();
 
@@ -123,7 +126,15 @@ describe('API gateway', () => {
         });
 
         it('must must pass offset and limit as query parameters', async () => {
-            nock(API_URI).get(`/polls?limit=4&offset=3`).reply(200, response);
+            tokenStorage.getAccessToken.mockReturnValueOnce('my_token');
+
+            fetchMock.restore().get((url, opts) => {
+                expect(url).toBe('/polls?limit=4&offset=3');
+                expect(opts.method).toBe('GET');
+                expect(opts.headers.Authorization).toEqual(`Bearer my_token`);
+
+                return true;
+            }, response);
 
             const result = await api.getPolls({ offset: 3, limit: 4 });
 
@@ -141,9 +152,15 @@ describe('API gateway', () => {
         };
 
         it('must return the response', async () => {
-            nock(API_URI).get('/polls/13')
-                .matchHeader('Authorization', `Bearer ${tokenStorage.getAccessToken()}`)
-                .reply(200, response);
+            tokenStorage.getAccessToken.mockReturnValueOnce('my_token');
+
+            fetchMock.restore().get((url, opts) => {
+                expect(url).toBe('/polls/13');
+                expect(opts.method).toBe('GET');
+                expect(opts.headers.Authorization).toEqual(`Bearer my_token`);
+
+                return true;
+            }, response);
 
             const result = await api.getPoll(13);
 
@@ -164,7 +181,15 @@ describe('API gateway', () => {
         };
 
         it('must send poll details', async () => {
-            nock(API_URI).post('/polls', request).reply(201, response);
+            tokenStorage.getAccessToken.mockReturnValueOnce('my_token');
+
+            fetchMock.restore().mock((url, opts) => {
+                expect(url).toBe('/polls');
+                expect(opts.method).toBe('POST');
+                expect(opts.headers.Authorization).toEqual(`Bearer my_token`);
+
+                return true;
+            }, response);
 
             const result = await api.createPoll(request);
 

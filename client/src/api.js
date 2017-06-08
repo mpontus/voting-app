@@ -204,7 +204,7 @@ export default class Api {
     vote(pollId, choice) {
         const url = this.getResourceUrl(`polls/${pollId}/votes`);
 
-        this.fetch(url, {
+        return this.fetch(url, {
             method: 'POST',
             body: JSON.stringify({
                 option: choice,

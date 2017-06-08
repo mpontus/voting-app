@@ -1,18 +1,14 @@
 import fetchMock from 'fetch-mock';
 import Api from './api';
 
-let accessToken, refreshToken;
-
-const tokenStorage = {
-    setAccessToken: jest.fn(),
-    getAccessToken: jest.fn(),
-    setRefreshToken: jest.fn(),
-    getRefreshToken: jest.fn(),
+const credentialsStore = {
+    getCredentials: jest.fn(),
+    setCredentials: jest.fn(),
 };
 
 const api = new Api('/', {
     fetch: fetchMock.fetchMock,
-    tokenStorage,
+    credentialsStore,
 });
 
 describe('API gateway', () => {
@@ -34,8 +30,7 @@ describe('API gateway', () => {
                 return true;
             }, response);
 
-            tokenStorage.setAccessToken.mockReset();
-            tokenStorage.setRefreshToken.mockReset();
+            credentialsStore.setCredentials.mockReset();
 
             result = await api.getAnonymousToken();
         });
@@ -44,15 +39,13 @@ describe('API gateway', () => {
             expect(result).toEqual(response);
         });
 
-        it('must set the access token in the storage', () => {
-            expect(tokenStorage.setAccessToken).toHaveBeenCalledTimes(1);
-            expect(tokenStorage.setAccessToken).toHaveBeenCalledWith(response.access_token);
+        it('must store new credentials', () => {
+            expect(credentialsStore.setCredentials).toHaveBeenCalledTimes(1);
+            expect(credentialsStore.setCredentials).toHaveBeenCalledWith({
+                accessToken: response.access_token,
+                refreshToken: null,
+            });
         });
-
-        it('must reset the refresh token in the storage', () => {
-            expect(tokenStorage.setRefreshToken).toHaveBeenCalledTimes(1);
-            expect(tokenStorage.setRefreshToken).toHaveBeenCalledWith(null);
-        })
     });
 
     describe('login', () => {
@@ -76,8 +69,7 @@ describe('API gateway', () => {
                 return true;
             }, response);
 
-            tokenStorage.setAccessToken.mockReset();
-            tokenStorage.setRefreshToken.mockReset();
+            credentialsStore.setCredentials.mockReset()
 
             result = await api.login('foo', 'bar');
         });
@@ -86,14 +78,12 @@ describe('API gateway', () => {
             expect(result).toEqual(response);
         });
 
-        it('must set the access token in the storage', () => {
-            expect(tokenStorage.setAccessToken).toHaveBeenCalledTimes(1);
-            expect(tokenStorage.setAccessToken).toHaveBeenCalledWith(response.access_token);
-        });
-
-        it('must set the refresh token in the storage', () => {
-            expect(tokenStorage.setRefreshToken).toHaveBeenCalledTimes(1);
-            expect(tokenStorage.setRefreshToken).toHaveBeenCalledWith(response.refresh_token);
+        it('must store new credentials', () => {
+            expect(credentialsStore.setCredentials).toHaveBeenCalledTimes(1);
+            expect(credentialsStore.setCredentials).toHaveBeenCalledWith({
+                accessToken: response.access_token,
+                refreshToken: response.refresh_token,
+            });
         });
     });
 
@@ -110,7 +100,9 @@ describe('API gateway', () => {
         };
 
         it('must return the response', async () => {
-            tokenStorage.getAccessToken.mockReturnValueOnce('my_token');
+            credentialsStore.getCredentials.mockReturnValueOnce({
+                accessToken: 'my_token',
+            });
 
             fetchMock.restore().get((url, opts) => {
                 expect(url).toBe('/polls');
@@ -126,7 +118,9 @@ describe('API gateway', () => {
         });
 
         it('must must pass offset and limit as query parameters', async () => {
-            tokenStorage.getAccessToken.mockReturnValueOnce('my_token');
+            credentialsStore.getCredentials.mockReturnValueOnce({
+                accessToken: 'my_token',
+            });
 
             fetchMock.restore().get((url, opts) => {
                 expect(url).toBe('/polls?limit=4&offset=3');
@@ -152,7 +146,9 @@ describe('API gateway', () => {
         };
 
         it('must return the response', async () => {
-            tokenStorage.getAccessToken.mockReturnValueOnce('my_token');
+            credentialsStore.getCredentials.mockReturnValueOnce({
+                accessToken: 'my_token',
+            });
 
             fetchMock.restore().get((url, opts) => {
                 expect(url).toBe('/polls/13');
@@ -181,7 +177,9 @@ describe('API gateway', () => {
         };
 
         it('must send poll details', async () => {
-            tokenStorage.getAccessToken.mockReturnValueOnce('my_token');
+            credentialsStore.getCredentials.mockReturnValueOnce({
+                accessToken: 'my_token',
+            });
 
             fetchMock.restore().mock((url, opts) => {
                 expect(url).toBe('/polls');
@@ -199,7 +197,9 @@ describe('API gateway', () => {
 
     describe('vote', () => {
         it('must send a request', async () => {
-            tokenStorage.getAccessToken.mockReturnValueOnce('my_token');
+            credentialsStore.getCredentials.mockReturnValueOnce({
+                accessToken: 'my_token',
+            });
 
             fetchMock.restore().mock((url, opts) => {
                 expect(url).toBe('/polls/21/votes');

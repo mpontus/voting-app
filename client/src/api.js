@@ -49,52 +49,66 @@ const appendQueryToUrl = R.pipe(
     createUrlModifier,
 );
 
-class TokenStorage {
-    accessToken = null;
-    refreshToken = null;
+class LocalStorageStore {
+    key = null;
 
-    setAccessToken(token) {
-        this.accessToken = token;
+    construct(key) {
+        this.key = key;
     }
 
-    getAccessToken() {
-        return this.accessToken;
+    getCredentials() {
+        return JSON.parse(localStorage.getItem(this.key));
     }
 
-    setRefreshToken(token) {
-        this.refreshToken = token;
-    }
-
-    getRefreshToken() {
-        return this.refreshToken;
+    setCredentials(value) {
+        return localStorage.setItem(this.key, JSON.stringify(value));
     }
 }
 
 export default class Api {
     constructor(apiUrl, {
         fetch = window.fetch.bind(window),
-        tokenStorage = new TokenStorage(),
+        credentialsStore = new LocalStorageStore('credentials'),
     } = {}) {
         this.apiUrl = normalizeUrl(apiUrl);
         this._fetch = fetch;
-        this.tokenStorage = tokenStorage;
+        this.credentialsStore = credentialsStore;
+    }
+
+    getCredentials() {
+        return this.credentialsStore.getCredentials() || {};
+    }
+
+    setCredentials(value) {
+        return this.credentialsStore.setCredentials(value);
     }
 
     async init() {
-        if (this.tokenStorage.getAccessToken()) {
+        const { accessToken } = this.getCredentials();
+
+        if (accessToken) {
             return Promise.resolve();
         }
 
         return this.getAnonymousToken();
     }
 
-    async fetch(input, init) {
+    async fetch(input, init = {}) {
         init = R.mergeDeepRight({
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             },
         }, init);
+
+        const { accessToken } = this.getCredentials();
+
+        if (accessToken) {
+            init = R.set(
+                R.lensPath(['headers', 'Authorization']),
+                `Bearer ${accessToken}`
+            )(init);
+        }
 
         const response = await this._fetch(input, init);
         const body = await response.json();
@@ -124,8 +138,14 @@ export default class Api {
             body: JSON.stringify({ grant_type: 'client_credentials' }),
         });
 
-        this.tokenStorage.setAccessToken(result.access_token);
-        this.tokenStorage.setRefreshToken(null);
+        const {
+            access_token: accessToken,
+        } = result;
+
+        this.setCredentials({
+            accessToken,
+            refreshToken: null,
+        });
 
         return result;
     }
@@ -140,8 +160,15 @@ export default class Api {
             }),
         });
 
-        this.tokenStorage.setAccessToken(result.access_token);
-        this.tokenStorage.setRefreshToken(result.refresh_token);
+        const {
+            access_token: accessToken,
+            refresh_token: refreshToken,
+        } = result;
+
+        this.setCredentials({
+            accessToken,
+            refreshToken,
+        });
 
         return result;
     }
@@ -155,51 +182,33 @@ export default class Api {
 
     getPolls({ limit, offset } = {}) {
         const url = this.getResourceUrl('polls', { limit, offset });
-        const accessToken = this.tokenStorage.getAccessToken();
 
-        return this.fetch(url, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        });
+        return this.fetch(url);
     }
 
     getPoll(id) {
         const url = this.getResourceUrl(`polls/${id}`);
-        const accessToken = this.tokenStorage.getAccessToken();
 
-        return this.fetch(url, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        });
+        return this.fetch(url);
     }
 
     createPoll(values) {
         const url = this.getResourceUrl(`polls`);
-        const accessToken = this.tokenStorage.getAccessToken();
 
         return this.fetch(url, {
             method: 'POST',
             body: JSON.stringify(values),
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            }
         });
     }
 
     vote(pollId, choice) {
         const url = this.getResourceUrl(`polls/${pollId}/votes`);
-        const accessToken = this.tokenStorage.getAccessToken();
 
         this.fetch(url, {
             method: 'POST',
             body: JSON.stringify({
                 option: choice,
             }),
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            }
         });
     }
 }

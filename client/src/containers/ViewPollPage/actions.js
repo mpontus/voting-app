@@ -58,6 +58,8 @@ export const voteRequest = (pollId, option) => ({
 
 export const voteResult = (payload) => {
     if (payload instanceof Error) {
+        console.dir(payload);
+        console.error(payload)
         return {
             type: VOTE_RESULT,
             error: true,
@@ -65,22 +67,28 @@ export const voteResult = (payload) => {
         }
     }
 
+    const { entities } = normalize(payload, pollSchema);
+
     return {
         type: VOTE_RESULT,
-        payload: {},
+        payload: {
+            entities,
+        },
     };
 };
 
 export const vote = (pollId, option) => async (dispatch, getState, api) => {
     dispatch(voteRequest(pollId, option));
 
+    let poll;
     try {
         await api.vote(pollId, option);
+        poll = await api.getPoll(pollId);
     } catch (error) {
         dispatch(voteResult(error));
 
         return;
     }
 
-    dispatch(voteResult());
+    dispatch(voteResult(poll));
 };

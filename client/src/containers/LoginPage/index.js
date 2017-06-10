@@ -4,6 +4,7 @@ import { compose, withHandlers } from 'recompose';
 import { withRouter } from 'react-router'
 import LoginForm from '../LoginForm';
 import { login } from './actions';
+import { Card, CardText, CardTitle } from 'material-ui';
 
 const enhance = compose(
     connect(null, { login }),
@@ -26,7 +27,14 @@ const enhance = compose(
 );
 
 const LoginPage = ({ handleSubmit }) => (
-    <LoginForm onSubmit={handleSubmit}/>
+
+    <Card>
+        <CardTitle title="Log In" />
+        <CardText>
+            <LoginForm onSubmit={handleSubmit}/>
+        </CardText>
+    </Card>
 );
 
 export default enhance(LoginPage);
+

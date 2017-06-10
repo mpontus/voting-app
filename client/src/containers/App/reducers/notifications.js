@@ -44,12 +44,16 @@ export default (state = initialState, action) => {
         }
 
         case VOTE_RESULT: {
-            if (action.error) {
-                const { message } = action.payload.response;
-                return addMessage(message)(state);
+            if (!action.error) {
+                return state;
             }
 
-            return state;
+            if (!action.payload.response) {
+                return state;
+            }
+
+            const { message } = action.payload.response;
+            return addMessage(message)(state);
         }
 
         default:

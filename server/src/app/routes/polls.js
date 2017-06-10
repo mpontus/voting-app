@@ -211,6 +211,6 @@ export default function (app, db, secret) {
                 },
             });
 
-        res.status(201).end();
+        res.status(201).json({});
     }));
 }

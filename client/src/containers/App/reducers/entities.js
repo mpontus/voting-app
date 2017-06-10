@@ -4,10 +4,12 @@ import {
     ENTITIES_LOADED as ENTITIES_FOR_HOME_PAGE_LOADED,
 } from '../../HomePage/constants';
 import { FETCH_POLL_RESULT } from '../../ViewPollPage/constants';
+import { VOTE_RESULT } from '../../ViewPollPage/constants';
 
 export default (state = Map(), action) => {
     switch (action.type) {
         case FETCH_POLL_RESULT:
+        case VOTE_RESULT:
         case ENTITIES_FOR_PAGE_LOADED:
         case ENTITIES_FOR_HOME_PAGE_LOADED: {
             const { entities } = action.payload;

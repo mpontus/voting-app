@@ -12,14 +12,11 @@ export default (state = null, action) => {
             return fromJS(user);
         }
 
-        case CLIENT_INFO_OBTAINED: {
+        case CLIENT_INFO_OBTAINED:
+        case LOGOUT: {
             const { user } = action.payload;
 
             return fromJS(user);
-        }
-
-        case LOGOUT: {
-            return null;
         }
 
         default:

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { compose, withProps } from 'recompose';
 import { Card, CardActions, CardText, CardTitle, FlatButton, List, ListItem, Menu, MenuItem } from 'material-ui';
 import { makeGetPoll } from './selectors';
+import { makeGetUser } from '../App/selectors';
 import { fetchPoll, vote } from './actions';
 import ToggleCheckBoxOutlineBlank from 'material-ui/svg-icons/toggle/check-box-outline-blank';
 import NavigationCheck from 'material-ui/svg-icons/navigation/check';
@@ -10,9 +11,11 @@ import NavigationCheck from 'material-ui/svg-icons/navigation/check';
 const makeMapStateToProps = () => (state, props) => {
     const { id } = props;
     const getPoll = makeGetPoll();
+    const getUser = makeGetUser();
 
     return {
         poll: getPoll(state, id),
+        user: getUser(state),
     };
 };
 
@@ -38,14 +41,20 @@ class ViewPollPage extends Component {
 
     render() {
         const { poll } = this.props;
+        const user = this.props.user.toJS();
 
         if (!poll) {
             return null;
         }
 
-        const { title, options, hasVoted, myVote, tally } = poll.toJS();
+        const { title, options, myVote, author } = poll.toJS();
 
-        if (hasVoted) {
+        const isOwner = user.id === author.id;
+        const hasVoted = myVote !== null;
+
+        const showResults = isOwner || hasVoted;
+
+        if (showResults) {
             return (
                 <Card>
                     <CardTitle title={title} />
@@ -63,9 +72,6 @@ class ViewPollPage extends Component {
                             ))}
                         </Menu>
                     </CardText>
-                    <CardActions style={{ textAlign: 'right' }}>
-                        <FlatButton label="Results" />
-                    </CardActions>
                 </Card>
             )
         }

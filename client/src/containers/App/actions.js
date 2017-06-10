@@ -17,9 +17,16 @@ export const clientInfoUpdated = (user) => ({
     },
 });
 
-export const logout = () => ({
-    type: LOGOUT,
-});
+export const logout = () => async (dispatch, getState, api) => {
+    await api.logout();
+
+    dispatch({
+        type: LOGOUT,
+        payload: {
+            user: await api.getUserInfo(),
+        },
+    });
+};
 
 export const pollLoaded = (poll) => ({
     type: POLL_LOADED,

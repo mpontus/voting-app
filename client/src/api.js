@@ -1,5 +1,6 @@
 import url from 'url';
 import R from 'ramda';
+import jwtDecode from 'jwt-decode';
 
 /**
  * Returns a function for which modifies url
@@ -69,18 +70,25 @@ export default class Api {
     constructor(apiUrl, {
         fetch = window.fetch.bind(window),
         credentialsStore = new LocalStorageStore('credentials'),
+        anonymousCredentialsStore = new LocalStorageStore('anonymous_credentials'),
     } = {}) {
         this.apiUrl = normalizeUrl(apiUrl);
         this._fetch = fetch;
         this.credentialsStore = credentialsStore;
+        this.anonymousCredentialsStore = anonymousCredentialsStore;
     }
 
     getCredentials() {
-        return this.credentialsStore.getCredentials() || {};
+        return this.credentialsStore.getCredentials() ||
+            this.anonymousCredentialsStore.getCredentials();
     }
 
     setCredentials(value) {
         return this.credentialsStore.setCredentials(value);
+    }
+
+    setAnonymousCredentials(value) {
+        return this.anonymousCredentialsStore.setCredentials(value);
     }
 
     async init() {
@@ -90,7 +98,7 @@ export default class Api {
             return Promise.resolve();
         }
 
-        return this.getAnonymousToken();
+        await this.getAnonymousToken();
     }
 
     async fetch(input, init = {}) {
@@ -142,9 +150,8 @@ export default class Api {
             access_token: accessToken,
         } = result;
 
-        this.setCredentials({
+        this.setAnonymousCredentials({
             accessToken,
-            refreshToken: null,
         });
 
         return result;
@@ -171,6 +178,16 @@ export default class Api {
         });
 
         return result;
+    }
+
+    logout() {
+        return this.getAnonymousToken();
+    }
+
+    getUserInfo() {
+        const { accessToken } = this.getCredentials();
+
+        return Promise.resolve(jwtDecode(accessToken));
     }
 
     register({ username, password }) {

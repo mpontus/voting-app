@@ -6,6 +6,7 @@ import createHistory from 'history/createBrowserHistory'
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import { AppContainer } from 'react-hot-loader'
 import App from './containers/App';
+import { clientInfoUpdated } from './containers/App/actions';
 import configureStore from './store';
 import Api from './api';
 import 'font-awesome/css/font-awesome.css';
@@ -32,7 +33,8 @@ const render = Component => {
     )
 };
 
-api.init().then(() => {
+api.init().then(() => api.getUserInfo()).then((user) => {
+    store.dispatch(clientInfoUpdated(user));
     render(App);
 });
 

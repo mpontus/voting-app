@@ -3,6 +3,7 @@ import shortid from 'shortid';
 import { LOGIN_RESULT } from '../../LoginPage/constants';
 import { NOTIFICATION_DISMISSED } from '../constants';
 import { VOTE_RESULT } from '../../ViewPollPage/constants';
+import { LOGOUT } from '../constants';
 
 const initialState = Map({
     messagesById: Map(),
@@ -55,6 +56,9 @@ export default (state = initialState, action) => {
             const { message } = action.payload.response;
             return addMessage(message)(state);
         }
+
+        case LOGOUT:
+            return addMessage('Bye!')(state);
 
         default:
             return state;

@@ -542,6 +542,10 @@ describe('API', () => {
                 expect(response.body.options).toEqual(poll.options);
             });
 
+            it('should return author id', () => {
+                expect(response.body.author.id).toBe(author.id);
+            });
+
             it('the tally must be empty', () => {
                 expect(response.body.tally).toEqual({});
             });

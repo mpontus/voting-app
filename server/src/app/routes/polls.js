@@ -46,6 +46,7 @@ export default function (app, db, secret) {
             .project({
                 title: 1,
                 options: 1,
+                author: 1,
                 tally: 1,
                 [`votes.${req.user.id}`]: 1,
             })
@@ -71,6 +72,7 @@ export default function (app, db, secret) {
                 id: doc._id,
                 title: doc.title,
                 options: doc.options,
+                author: doc.author,
                 tally: doc.tally,
                 hasVoted,
                 myVote,
@@ -102,6 +104,7 @@ export default function (app, db, secret) {
                 title: 1,
                 options: 1,
                 tally: 1,
+                author: 1,
                 [`votes.${req.user.id}`]: 1,
             })
             .toArray();
@@ -125,6 +128,7 @@ export default function (app, db, secret) {
             id: doc._id,
             title: doc.title,
             options: doc.options,
+            author: doc.author,
             tally: doc.tally,
             hasVoted,
             myVote,

@@ -1,8 +1,11 @@
 import request from 'supertest'
 import {MongoClient, ObjectID} from 'mongodb';
+import cuid from 'cuid';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import createApp from '../src/app';
+
+const secret = 'secret';
 
 const isValidJwt = (token) => {
     try {
@@ -52,7 +55,7 @@ describe('API', () => {
 
         await db.dropDatabase();
 
-        app = createApp(db, 'secret');
+        app = createApp(db, secret);
     });
 
     afterAll(() => {
@@ -456,21 +459,40 @@ describe('API', () => {
         });
     });
 
-    describe('GET /polls/:id', () => {
-        let response, pollId, myToken, otherToken;
+    describe.only('GET /polls/:id', () => {
+        let response;
 
-        beforeAll(async () => {
-            [myToken, otherToken] = await Promise.all([
-                registerAndAuthenticate(app, 'moby', '123456'),
-                registerAndAuthenticate(app, 'sarah', '123456'),
-            ]);
-        });
+        const author = {
+            id: ObjectID().toString(),
+            username: 'bar',
+        };
+
+        const poll = {
+            id: ObjectID().toString(),
+            title: 'foo',
+            options: ['bar', 'baz'],
+        };
+
+        const anonymousToken = jwt.sign({
+            id: cuid(),
+            anonymous: true,
+        }, secret);
+
+        const authorToken = jwt.sign({
+            id: author.id,
+            name: author.name,
+        }, secret);
+
+        const otherToken = jwt.sign({
+            id: cuid(),
+            anonymous: true,
+        }, secret);
 
         describe('when the poll does not exist', () => {
             beforeAll(async () => {
                 response = await request(app)
                     .get(`/polls/9999`)
-                    .set('Authorization', `Bearer ${myToken}`);
+                    .set('Authorization', `Bearer ${anonymousToken}`);
             });
 
             it('should return "404 Not Found" status', () => {
@@ -485,23 +507,23 @@ describe('API', () => {
         describe('when the poll has not been voted on', () => {
             // Create the poll
             beforeAll(async () => {
-                const authorToken = await registerAndAuthenticate(app, 'mmm', '123456');
-                const response = await request(app)
-                    .post('/polls')
-                    .set('Authorization', `Bearer ${authorToken}`)
-                    .send({
-                        title: 'Choose an option',
-                        options: ['foo', 'bar'],
-                    });
+                db.dropDatabase();
 
-                pollId = response.body.id;
+                await db.collection('polls').insertOne({
+                    _id: ObjectID(poll.id),
+                    title: poll.title,
+                    options: poll.options,
+                    author,
+                    votes: {},
+                    tally: {},
+                });
             });
 
             // Retrieve the poll
             beforeAll(async () => {
                 response = await request(app)
-                    .get(`/polls/${pollId}`)
-                    .set('Authorization', `Bearer ${myToken}`);
+                    .get(`/polls/${poll.id}`)
+                    .set('Authorization', `Bearer ${anonymousToken}`);
             });
 
             it('should return "200 Ok" status', () => {
@@ -509,15 +531,15 @@ describe('API', () => {
             });
 
             it('should return poll id', () => {
-                expect(response.body.id).toBe(pollId);
+                expect(response.body.id).toBe(poll.id);
             });
 
             it('should return poll title', () => {
-                expect(response.body.title).toBe('Choose an option');
+                expect(response.body.title).toBe(poll.title);
             });
 
             it('should return poll options', () => {
-                expect(response.body.options).toEqual(['foo', 'bar']);
+                expect(response.body.options).toEqual(poll.options);
             });
 
             it('the tally must be empty', () => {
@@ -526,15 +548,31 @@ describe('API', () => {
         });
 
         describe('when someone else has voted on the poll', () => {
+            // Create the poll
             beforeAll(async () => {
-                await request(app)
-                    .post(`/polls/${pollId}/votes`)
-                    .set('Authorization', `Bearer ${otherToken}`)
-                    .send({ option: 'foo' });
+                const voterId = cuid();
 
+                db.dropDatabase();
+
+                await db.collection('polls').insertOne({
+                    _id: ObjectID(poll.id),
+                    title: poll.title,
+                    options: poll.options,
+                    author,
+                    votes: {
+                        [voterId]: 'bar',
+                    },
+                    tally: {
+                        'bar': 1,
+                    },
+                });
+            });
+
+            // Retrieve the poll
+            beforeAll(async () => {
                 response = await request(app)
-                    .get(`/polls/${pollId}`)
-                    .set('Authorization', `Bearer ${myToken}`);
+                    .get(`/polls/${poll.id}`)
+                    .set('Authorization', `Bearer ${anonymousToken}`);
             });
 
             it('should return "200 Ok" status', async () => {
@@ -543,7 +581,7 @@ describe('API', () => {
 
             it('should return the updated tally', () => {
                 expect(response.body.tally).toEqual({
-                    foo: 1,
+                    bar: 1,
                 });
             });
 
@@ -554,14 +592,30 @@ describe('API', () => {
 
         describe('when I have voted on the poll', () => {
             beforeAll(async () => {
-                await request(app)
-                    .post(`/polls/${pollId}/votes`)
-                    .set('Authorization', `Bearer ${myToken}`)
-                    .send({option: 'bar'});
+                const voterId = cuid();
+                const voterToken = jwt.sign({
+                    id: voterId,
+                    anonymous: true,
+                }, secret);
+
+                db.dropDatabase();
+
+                await db.collection('polls').insertOne({
+                    _id: ObjectID(poll.id),
+                    title: poll.title,
+                    options: poll.options,
+                    author,
+                    votes: {
+                        [voterId]: 'bar',
+                    },
+                    tally: {
+                        'bar': 1,
+                    },
+                });
 
                 response = await request(app)
-                    .get(`/polls/${pollId}`)
-                    .set('Authorization', `Bearer ${myToken}`);
+                    .get(`/polls/${poll.id}`)
+                    .set('Authorization', `Bearer ${voterToken}`);
             });
 
             it('should return hasVoted of true', () => {

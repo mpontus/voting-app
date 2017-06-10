@@ -33,6 +33,14 @@ class ViewPollPage extends Component {
         fetchPoll(id);
     }
 
+    componentWillReceiveProps(nextProps) {
+        const { fetchPoll, id, user } = nextProps;
+
+        if ((this.props.id !== id) || (this.props.user !== user)) {
+            fetchPoll(id);
+        }
+    }
+
     handleVote(option) {
         const { vote, id } = this.props;
 

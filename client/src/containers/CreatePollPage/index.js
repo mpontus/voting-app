@@ -16,9 +16,14 @@ const enhance = compose(
     connect(mapStateToProps, { createPoll }),
     withRouter,
     withProps(({ createPoll, history: { push } }) => ({
-        handleSubmit: (values) => createPoll(values).then(() => {
-            push('/');
-        })
+        handleSubmit: (values) => {
+            // console.log(values.toJS());
+            // debugger;
+
+            return createPoll(values.toJS()).then(() => {
+                push('/');
+            });
+        }
     }))
 );
 

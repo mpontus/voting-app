@@ -53,7 +53,7 @@ const appendQueryToUrl = R.pipe(
 class LocalStorageStore {
     key = null;
 
-    construct(key) {
+    constructor(key) {
         this.key = key;
     }
 
@@ -62,7 +62,13 @@ class LocalStorageStore {
     }
 
     setCredentials(value) {
-        return localStorage.setItem(this.key, JSON.stringify(value));
+        if (!value) {
+            localStorage.removeItem(this.key);
+
+            return;
+        }
+
+        localStorage.setItem(this.key, JSON.stringify(value));
     }
 }
 
@@ -80,7 +86,8 @@ export default class Api {
 
     getCredentials() {
         return this.credentialsStore.getCredentials() ||
-            this.anonymousCredentialsStore.getCredentials();
+            this.anonymousCredentialsStore.getCredentials() ||
+            {};
     }
 
     setCredentials(value) {
@@ -180,7 +187,11 @@ export default class Api {
         return result;
     }
 
-    logout() {
+    async logout() {
+        this.credentialsStore.setCredentials(null);
+
+        await this.init();
+
         return this.getAnonymousToken();
     }
 

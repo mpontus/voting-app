@@ -56,15 +56,7 @@ const CreatePollForm = ({
                 onRemoveLine={(index) => array.remove('options', index)}
                 onChangeLine={(index, value) => change(`options[${index}]`, value)}
             />
-            <Row style={styles.actions}>
-                <Col xs={12} sm={6} smOffset={6}>
-                    <RaisedButton
-                        label="Create Poll"
-                        fullWidth={true}
-                        type="submit"
-                    />
-                </Col>
-            </Row>
+            <input type="submit" style={{ display: 'none' }} />
         </form>
     );
 };

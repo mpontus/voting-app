@@ -10,17 +10,20 @@ const RegistrationPage = ({
     <form onSubmit={handleSubmit}>
         <Field
             component={TextField}
+            name="username"
             fullWidth
             floatingLabelText="Username"
         />
         <Field
             component={TextField}
+            name="password"
             fullWidth
             floatingLabelText="Password"
             type="password"
         />
         <Field
             component={TextField}
+            name="password_confirmation"
             fullWidth
             floatingLabelText="Password confirmation"
             type="password"

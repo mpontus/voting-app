@@ -12,10 +12,24 @@ import {
 import NavigationMoreVert from 'material-ui/svg-icons/navigation/more-vert'
 import FontIcon from 'material-ui/FontIcon';
 import { muiThemeable } from 'material-ui/styles'
+import { withRouter } from 'react-router';
+import { compose } from 'recompose';
 
-const Header = ({ muiTheme, showLogin, username, onLogout }) => (
+const styles = {
+    title: {
+        cursor: 'pointer',
+    },
+};
+
+const enhance = compose(
+    muiThemeable(),
+    withRouter,
+);
+
+const Header = ({ muiTheme, showLogin, username, onLogout, history }) => (
     <AppBar
-        title="Voting App"
+        title={<span style={styles.title}>Voting App</span>}
+        onTitleTouchTap={() => history.push('/')}
         showMenuIconButton={false}
         iconElementRight={
             showLogin ? (
@@ -44,4 +58,4 @@ const Header = ({ muiTheme, showLogin, username, onLogout }) => (
     />
 );
 
-export default muiThemeable()(Header);
+export default enhance(Header);

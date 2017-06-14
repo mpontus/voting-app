@@ -18,9 +18,6 @@ const getStyles = (muiTheme) => {
     return {
         header: {
         },
-        canvas: {
-            paddingTop: 30,
-        },
         layout: {
             position: 'absolute',
             height: '100%',

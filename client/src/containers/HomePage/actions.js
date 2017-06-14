@@ -38,7 +38,7 @@ export const homePageVisitted = () => async (dispatch, getState, api) => {
     let polls;
 
     try {
-        polls = await api.getPolls()
+        polls = await api.getPolls({ limit: 25 })
     } catch (error) {
         dispatch(entitiesForHomePageLoaded(error));
 

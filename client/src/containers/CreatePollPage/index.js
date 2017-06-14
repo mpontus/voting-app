@@ -7,7 +7,9 @@ import { compose, withProps } from 'recompose';
 import CreatePollForm from '../CreatePollForm';
 import { makeGetFetching } from './selectors';
 import { createPoll } from './actions';
-import { Card, CardActions, CardText, CardTitle, RaisedButton } from 'material-ui';
+import { Card, CardActions, CardText, CardTitle, FlatButton, FontIcon, RaisedButton } from 'material-ui';
+import PollIcon from 'material-ui/svg-icons/social/poll'
+import { Link } from 'react-router-dom';
 
 const mapStateToProps = () => createStructuredSelector({
     fetching: makeGetFetching(),
@@ -29,18 +31,26 @@ const enhance = compose(
 );
 
 const CreatePollPage = ({ submit, submitting, handleSubmit }) => (
-    <Card>
-        <CardTitle title="New Polll" />
-        <CardText style={{ paddingRight: 0 }}>
-            <CreatePollForm onSubmit={handleSubmit} />
-        </CardText>
-        <CardActions style={{ textAlign: 'right' }}>
-            <RaisedButton
-                label="Create Poll"
-                onClick={() => submit('create_poll')}
-            />
-        </CardActions>
-    </Card>
+    <div>
+        <RaisedButton
+            primary
+            fullWidth
+            label="Return to the list of polls"
+            containerElement={<Link to="/" />}
+            icon={<PollIcon/>}
+        />
+        <Card>
+            <CardText style={{ paddingRight: 0 }}>
+                <CreatePollForm onSubmit={handleSubmit} />
+            </CardText>
+            <CardActions style={{ textAlign: 'right' }}>
+                <FlatButton
+                    label="Create Poll"
+                    onClick={() => submit('create_poll')}
+                />
+            </CardActions>
+        </Card>
+    </div>
 );
 
 export default enhance(CreatePollPage);

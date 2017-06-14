@@ -50,37 +50,27 @@ class ViewPollPage extends Component {
     }
 
     render() {
-        const { poll } = this.props;
-        const user = this.props.user.toJS();
-
-        if (!poll) {
+        if (!this.props.poll) {
             return null;
         }
 
-        const { title, options, myVote, author } = poll.toJS();
+        const poll = this.props.poll.toJS();
+        const user = this.props.user.toJS();
+        const { title, options, myVote, author } = poll;
         const isOwner = user.id === author.id;
         const hasVoted = myVote !== null;
         const showResults = isOwner || hasVoted;
 
         return (
             <div>
-                <FlatButton
-                    primary
-                    fullWidth
-                    label="Back to the List"
-                    icon={<KeyboardBackspaceIcon style={{ paddingTop: 1 }} />}
-                    containerElement={<Link to="/" />}
-                />
                 {showResults ? (
                     <Results
-                        title={title}
-                        options={options}
+                        {...poll}
                         value={myVote}
                     />
                 ) : (
                     <Form
-                        title={title}
-                        options={options}
+                        {...poll}
                     />
                 )}
             </div>

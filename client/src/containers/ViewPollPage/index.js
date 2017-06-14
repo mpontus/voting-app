@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose, withProps } from 'recompose';
-import { Card, CardActions, CardText, CardTitle, FlatButton, List, ListItem, Menu, MenuItem } from 'material-ui';
+import { FlatButton, FontIcon } from 'material-ui';
 import { makeGetPoll } from './selectors';
 import { makeGetUser } from '../App/selectors';
 import { fetchPoll, vote } from './actions';
-import ToggleCheckBoxOutlineBlank from 'material-ui/svg-icons/toggle/check-box-outline-blank';
-import NavigationCheck from 'material-ui/svg-icons/navigation/check';
+import { Link } from 'react-router-dom';
+import KeyboardBackspaceIcon from 'material-ui/svg-icons/hardware/keyboard-backspace';
+import Results from './Results';
+import Form from './Form';
 
 const makeMapStateToProps = () => (state, props) => {
     const { id } = props;
@@ -56,56 +58,34 @@ class ViewPollPage extends Component {
         }
 
         const { title, options, myVote, author } = poll.toJS();
-
         const isOwner = user.id === author.id;
         const hasVoted = myVote !== null;
-
         const showResults = isOwner || hasVoted;
 
-        if (showResults) {
-            return (
-                <Card>
-                    <CardTitle title={title} />
-                    <CardText style={{ paddingRight: 0 }}>
-                        <Menu
-                            style={{ width: '100%', marginLeft: -16 }}
-                        >
-                            {options.map((option) => (
-                                <MenuItem
-                                    key={option}
-                                    checked={option === myVote}
-                                    insetChildren={true}
-                                    primaryText={option}
-                                />
-                            ))}
-                        </Menu>
-                    </CardText>
-                </Card>
-            )
-        }
-
         return (
-            <Card>
-                <CardTitle title={title} />
-                <CardText style={{ paddingRight: 0 }}>
-                    <Menu
-                        style={{ width: '100%', marginLeft: -16 }}
-                    >
-                        {options.map((option) => (
-                            <MenuItem
-                                key={option}
-                                leftIcon={<ToggleCheckBoxOutlineBlank />}
-                                primaryText={option}
-                                onClick={() => this.handleVote(option)}
-                            />
-                        ))}
-                    </Menu>
-                </CardText>
-                <CardActions style={{ textAlign: 'right' }}>
-                    <FlatButton label="Results" />
-                </CardActions>
-            </Card>
+            <div>
+                <FlatButton
+                    primary
+                    fullWidth
+                    label="Back to the List"
+                    icon={<KeyboardBackspaceIcon style={{ paddingTop: 1 }} />}
+                    containerElement={<Link to="/" />}
+                />
+                {showResults ? (
+                    <Results
+                        title={title}
+                        options={options}
+                        value={myVote}
+                    />
+                ) : (
+                    <Form
+                        title={title}
+                        options={options}
+                    />
+                )}
+            </div>
         )
+
     }
 }
 export default enhance(ViewPollPage);

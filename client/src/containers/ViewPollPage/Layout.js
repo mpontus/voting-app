@@ -6,7 +6,7 @@ import { CardActions } from 'material-ui';
 const Layout = ({ title, avatar, actions, children, ...rest }) => (
     <div {...rest}>
         <Row>
-            <Col xs={12} md={6}>
+            <Col xs={12} md={6} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                 <PollBanner
                     title={title}
                     avatar={avatar}

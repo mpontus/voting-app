@@ -64,13 +64,13 @@ const VotingForm = ({
                     <Subheader style={{ paddingLeft: 0, lineHeight: 1, paddingBottom: 16 }}>
                         Select one option:
                     </Subheader>
-                    {options.map((option) => {
+                    {options.map((option, index) => {
                         const checked = value && !value.create && option === value.option;
 
                         return (
                             <Checkbox
                                 disabled={disableCheckboxes}
-                                key={option}
+                                key={index}
                                 label={option}
                                 checked={!!checked}
                                 value={option}
@@ -79,14 +79,13 @@ const VotingForm = ({
                         );
                     })}
                 </div>
-                {showCustomOptonInput && (
-                    <TextField
-                        floatingLabelText="Add new option"
-                        floatingLabelFixed
-                        value={customValue}
-                        onChange={handleChange}
-                    />
-                )}
+                <TextField
+                    style={{ visibility: showCustomOptonInput ? 'visible' : 'hidden' }}
+                    floatingLabelText="Add new option"
+                    floatingLabelFixed
+                    value={customValue}
+                    onChange={handleChange}
+                />
             </CardText>
         </div>
     );

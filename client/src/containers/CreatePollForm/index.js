@@ -2,17 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { reduxForm, Field, formValueSelector } from 'redux-form/immutable';
 import { compose } from 'recompose'
-import { Row, Col } from 'react-flexbox-grid';
 import { TextField } from 'redux-form-material-ui';
-import { RaisedButton } from 'material-ui'
 import OptionInput from '../../components/OptionInput';
 import MultiInput from '../../components/MultiInput/index';
-
-const styles = {
-    actions: {
-        marginTop: 30,
-    },
-};
 
 const enhance = compose(
     reduxForm({ form: 'create_poll' }),

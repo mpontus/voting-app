@@ -8,45 +8,31 @@ const propTypes = {
     children: PropTypes.node,
 };
 
-const getStyles = (muiTheme) => {
-    const {
-        palette: {
-            canvasColor,
-        },
-    } = muiTheme;
-
-    return {
-        header: {
-        },
-        layout: {
-            position: 'absolute',
-            height: '100%',
-            width: '100%',
-            backgroundColor: brown50
-        }
+const styles = {
+    layout: {
+        position: 'absolute',
+        height: '100%',
+        width: '100%',
+        backgroundColor: brown50
     }
 };
 
-const Layout = ({ muiTheme, header, children }) => {
-    const styles=  getStyles(muiTheme);
-
-    return (
-        <div style={styles.layout}>
-            <div style={styles.header}>
-                {header}
-            </div>
-            <div style={styles.canvas}>
-                <Grid>
-                    <Row>
-                        <Col xs={10} xsOffset={1}>
-                            {children}
-                        </Col>
-                    </Row>
-                </Grid>
-            </div>
+const Layout = ({ muiTheme, header, children }) => (
+    <div style={styles.layout}>
+        <div style={styles.header}>
+            {header}
         </div>
-    );
-};
+        <div style={styles.canvas}>
+            <Grid>
+                <Row>
+                    <Col xs={10} xsOffset={1}>
+                        {children}
+                    </Col>
+                </Row>
+            </Grid>
+        </div>
+    </div>
+);
 
 Layout.propTypes = propTypes;
 

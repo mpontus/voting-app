@@ -7,7 +7,7 @@ import { compose, withProps } from 'recompose';
 import CreatePollForm from '../CreatePollForm';
 import { makeGetFetching } from './selectors';
 import { createPoll } from './actions';
-import { Card, CardActions, CardText, CardTitle, FlatButton, FontIcon, RaisedButton } from 'material-ui';
+import { Card, CardActions, CardText, FlatButton, RaisedButton } from 'material-ui';
 import PollIcon from 'material-ui/svg-icons/social/poll'
 import { Link } from 'react-router-dom';
 
@@ -19,14 +19,7 @@ const enhance = compose(
     connect(mapStateToProps, { submit, createPoll }),
     withRouter,
     withProps(({ createPoll, history: { push } }) => ({
-        handleSubmit: (values) => {
-            // console.log(values.toJS());
-            // debugger;
-
-            return createPoll(values.toJS()).then(() => {
-                push('/');
-            });
-        }
+        handleSubmit: (values) => createPoll(values.toJS()).then(() => push('/')),
     }))
 );
 

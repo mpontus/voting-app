@@ -6,9 +6,8 @@ import LoginForm from '../LoginForm';
 import RegistrationForm from '../RegistrationForm'
 import { login } from './actions';
 import { registerUser } from '../RegistrationPage/actions'
-import { Tabs, Tab, Card, CardText, CardActions, FontIcon, FlatButton } from 'material-ui';
+import { Tab, Card, CardText, CardActions, FontIcon, FlatButton } from 'material-ui';
 import { submit } from 'redux-form';
-import SwipeableViews from 'react-swipeable-views';
 import SwipeableTabs from '../../components/SwipeableTabs';
 
 const enhance = compose(
@@ -35,19 +34,6 @@ const enhance = compose(
         }
     })
 );
-
-
-const styles = {
-    headline: {
-        fontSize: 24,
-        paddingTop: 16,
-        marginBottom: 12,
-        fontWeight: 400,
-    },
-    slide: {
-        padding: 10,
-    },
-};
 
 const LoginPage = ({ handleSubmit, handleRegister, submit }) => (
     <Card>
@@ -91,78 +77,5 @@ const LoginPage = ({ handleSubmit, handleRegister, submit }) => (
     </Card>
 );
 
-class TabsExampleSwipeable extends React.Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            slideIndex: 0,
-        };
-    }
-
-    handleChange = (value) => {
-        this.setState({
-            slideIndex: value,
-        });
-    };
-
-    render() {
-        const { handleSubmit, handleRegister, submit } = this.props;
-
-        return (
-            <Card>
-                <Tabs
-                    onChange={this.handleChange}
-                    value={this.state.slideIndex}
-                >
-                    <Tab
-                        icon={<FontIcon className="fa fa-user-circle-o"/>}
-                        label="Log In"
-                        value={0}
-                    />
-                    <Tab
-                        icon={<FontIcon className="fa fa-user-circle"/>}
-                        label="Register"
-                        value={1}
-                    />
-                </Tabs>
-                <SwipeableViews
-                    index={this.state.slideIndex}
-                    onChangeIndex={this.handleChange}
-                >
-                    <div>
-                        <CardText>
-                            <LoginForm onSubmit={handleSubmit}/>
-                        </CardText>
-                        <CardActions style={{ textAlign: 'right' }}>
-                            <FlatButton
-                                primary
-                                icon={<FontIcon className="fa fa-sign-in"/>}
-                                label="Enter the Voting App"
-                                onClick={() => submit('login')}
-                            />
-                        </CardActions>
-                    </div>
-                    <div>
-                        <CardText>
-                            <RegistrationForm onSubmit={handleRegister} />
-                        </CardText>
-                        <CardActions style={{ textAlign: 'right' }}>
-                            <FlatButton
-                                primary
-                                icon={<FontIcon className="fa fa-sign-in"/>}
-                                label="Create New Account"
-                                onClick={() => submit('registration')}
-                            />
-                        </CardActions>
-                    </div>
-                </SwipeableViews>
-            </Card>
-        );
-    }
-}
-
-
 export default enhance(LoginPage);
-// export default enhance(TabsExampleSwipeable);
 

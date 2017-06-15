@@ -2,11 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { compose, withState, withHandlers } from 'recompose';
 import {
-    Avatar, Card, CardActions, CardText, CardTitle, Checkbox, Divider, FlatButton, FontIcon, Menu, MenuItem,
-    RaisedButton,
-    Subheader, TextField,
+    Avatar, Card, CardActions, CardText, CardTitle, FlatButton,
 } from 'material-ui';
-import ToggleCheckBoxOutlineBlank from 'material-ui/svg-icons/toggle/check-box-outline-blank';
 import KeyboardBackspaceIcon from 'material-ui/svg-icons/hardware/keyboard-backspace';
 import { Col, Row } from 'react-flexbox-grid';
 import { Link } from 'react-router-dom';
@@ -22,7 +19,7 @@ const enhance = compose(
         handleSubmit: ({ id, value, vote, extend }) => () => {
             const { create, option } = value;
 
-            if (value.create) {
+            if (create) {
                 return extend(id, option);
             }
 
@@ -49,10 +46,7 @@ const Form = ({ title, options, author, value, setValue, handleSubmit }) => (
                 <VotingForm
                     options={options}
                     value={value}
-                    onChange={(value) => {
-                        console.log(value);
-                        setValue(value);
-                    }}
+                    onChange={setValue}
                 />
             </Col>
         </Row>

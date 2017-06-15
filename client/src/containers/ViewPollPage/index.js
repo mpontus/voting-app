@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose, withProps } from 'recompose';
-import { FlatButton, FontIcon } from 'material-ui';
 import { makeGetPoll } from './selectors';
 import { makeGetUser } from '../App/selectors';
 import { fetchPoll, vote } from './actions';
-import { Link } from 'react-router-dom';
-import KeyboardBackspaceIcon from 'material-ui/svg-icons/hardware/keyboard-backspace';
 import Results from './Results';
 import Form from './Form';
 
@@ -56,7 +53,7 @@ class ViewPollPage extends Component {
 
         const poll = this.props.poll.toJS();
         const user = this.props.user.toJS();
-        const { title, options, myVote, author } = poll;
+        const { myVote, author } = poll;
         const isOwner = user.id === author.id;
         const hasVoted = myVote !== null;
         const showResults = isOwner || hasVoted;

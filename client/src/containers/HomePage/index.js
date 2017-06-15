@@ -7,17 +7,10 @@ import PersonIcon from 'material-ui/svg-icons/social/person';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import AddIcon from 'material-ui/svg-icons/av/playlist-add';
 import { grey400 } from 'material-ui/styles/colors';
-
-import {
-    makeGetPolls,
-    makeGetFetching,
-} from './selectors';
-
+import { makeGetPolls, makeGetFetching } from './selectors';
 import { homePageVisitted } from './actions';
 import {
-    Avatar, Card, CardText, Divider, FlatButton, IconButton, IconMenu, List, ListItem, MenuItem, RaisedButton,
-    Subheader,
-    TextField,
+    Avatar, Card, FlatButton, IconButton, IconMenu, List, ListItem, MenuItem, Subheader,
 } from 'material-ui';
 
 const propTypes = {
@@ -89,7 +82,7 @@ class HomePage extends Component {
                                     containerElement={<Link to={`/poll/${id}`}/>}
                                     leftAvatar={avatar}
                                     rightIconButton={rightIconMenu}
-                                    primaryText={poll.get('title')}
+                                    primaryText={title}
                                     secondaryText={`By ${username}`}
                                 />
                             );

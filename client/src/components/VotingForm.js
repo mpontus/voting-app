@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { compose, withState, withHandlers, withProps, setPropTypes } from 'recompose';
-import { CardActions, CardText, Checkbox, FlatButton, Subheader, TextField } from 'material-ui';
-import CheckCircleIcon from 'material-ui/svg-icons/action/check-circle';
+import { compose, withHandlers, setPropTypes } from 'recompose';
+import { CardText, Checkbox, Subheader, TextField } from 'material-ui';
 
 const propTypes = {
     options: PropTypes.arrayOf(
@@ -46,8 +45,6 @@ const enhance = compose(
 const VotingForm = ({
     options,
     value,
-    selectedOption,
-    onSelectOption,
     handleCheck,
     handleChange,
 }) => {

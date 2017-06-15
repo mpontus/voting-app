@@ -1,12 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose, withState, withHandlers } from 'recompose';
-import { CardActions, FlatButton } from 'material-ui';
-import { Col, Row } from 'react-flexbox-grid';
+import { FlatButton } from 'material-ui';
 import CheckCircleIcon from 'material-ui/svg-icons/action/check-circle';
 import VotingForm from '../../components/VotingForm';
 import { vote, extend } from './actions';
-import PollBanner from '../../components/PollBanner';
+import Layout from './Layout';
 
 const enhance = compose(
     connect(null, { vote, extend }),
@@ -25,23 +24,10 @@ const enhance = compose(
 );
 
 const Form = ({ title, options, author, value, setValue, handleSubmit }) => (
-    <div>
-        <Row>
-            <Col xs={12} md={6}>
-                <PollBanner
-                    title={title}
-                    avatar={author.avatar}
-                />
-            </Col>
-            <Col xs={12} md={6}>
-                <VotingForm
-                    options={options}
-                    value={value}
-                    onChange={setValue}
-                />
-            </Col>
-        </Row>
-        <CardActions style={{ textAlign: 'right' }}>
+    <Layout
+        title={title}
+        avatar={author.avatar}
+        actions={
             <FlatButton
                 primary
                 disabled={!value}
@@ -49,8 +35,14 @@ const Form = ({ title, options, author, value, setValue, handleSubmit }) => (
                 label="Submit your vote"
                 onClick={handleSubmit}
             />
-        </CardActions>
-    </div>
+        }
+    >
+        <VotingForm
+            options={options}
+            value={value}
+            onChange={setValue}
+        />
+    </Layout>
 );
 
 export default enhance(Form);

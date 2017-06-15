@@ -92,3 +92,19 @@ export const vote = (pollId, option) => async (dispatch, getState, api) => {
 
     dispatch(voteResult(poll));
 };
+
+export const extend = (pollId, option) => async (dispatch, getState, api) => {
+    dispatch(voteRequest(pollId, option));
+
+    let poll;
+    try {
+        await api.createOption(pollId, option);
+        poll = await api.getPoll(pollId);
+    } catch (error) {
+        dispatch(voteResult(error));
+
+        return;
+    }
+
+    dispatch(voteResult(poll));
+}

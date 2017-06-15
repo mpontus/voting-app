@@ -6,6 +6,9 @@ import { makeGetUser } from '../App/selectors';
 import { fetchPoll, vote } from './actions';
 import Results from './Results';
 import Form from './Form';
+import { Card, FlatButton } from 'material-ui';
+import KeyboardBackspaceIcon from 'material-ui/svg-icons/hardware/keyboard-backspace';
+import { Link } from 'react-router-dom';
 
 const makeMapStateToProps = () => (state, props) => {
     const { id } = props;
@@ -59,7 +62,12 @@ class ViewPollPage extends Component {
         const showResults = isOwner || hasVoted;
 
         return (
-            <div>
+            <Card>
+                <FlatButton
+                    label="Back to the List"
+                    icon={<KeyboardBackspaceIcon style={{ paddingTop: 1 }} />}
+                    containerElement={<Link to="/" />}
+                />
                 {showResults ? (
                     <Results
                         {...poll}
@@ -70,7 +78,7 @@ class ViewPollPage extends Component {
                         {...poll}
                     />
                 )}
-            </div>
+            </Card>
         )
 
     }

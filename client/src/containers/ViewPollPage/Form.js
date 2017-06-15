@@ -1,16 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose, withState, withHandlers } from 'recompose';
-import {
-    Avatar, Card, CardActions, CardText, CardTitle, FlatButton,
-} from 'material-ui';
-import KeyboardBackspaceIcon from 'material-ui/svg-icons/hardware/keyboard-backspace';
+import { CardActions, FlatButton } from 'material-ui';
 import { Col, Row } from 'react-flexbox-grid';
-import { Link } from 'react-router-dom';
-import { grey300 } from 'material-ui/styles/colors';
 import CheckCircleIcon from 'material-ui/svg-icons/action/check-circle';
 import VotingForm from '../../components/VotingForm';
 import { vote, extend } from './actions';
+import PollBanner from '../../components/PollBanner';
 
 const enhance = compose(
     connect(null, { vote, extend }),
@@ -29,18 +25,13 @@ const enhance = compose(
 );
 
 const Form = ({ title, options, author, value, setValue, handleSubmit }) => (
-    <Card>
-        <FlatButton
-            label="Back to the List"
-            icon={<KeyboardBackspaceIcon style={{ paddingTop: 1 }} />}
-            containerElement={<Link to="/" />}
-        />
+    <div>
         <Row>
             <Col xs={12} md={6}>
-                <CardText style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                    <Avatar src={author.avatar} size={140} style={{ borderStyle: 'solid', borderWidth: 3, borderColor: grey300 }} />
-                    <CardTitle title={title} style={{ textAlign: 'center', paddingBottom: 0 }} />
-                </CardText>
+                <PollBanner
+                    title={title}
+                    avatar={author.avatar}
+                />
             </Col>
             <Col xs={12} md={6}>
                 <VotingForm
@@ -59,7 +50,7 @@ const Form = ({ title, options, author, value, setValue, handleSubmit }) => (
                 onClick={handleSubmit}
             />
         </CardActions>
-    </Card>
+    </div>
 );
 
 export default enhance(Form);

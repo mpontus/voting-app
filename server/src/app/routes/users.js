@@ -23,7 +23,7 @@ export default function (app, db, saltRounds) {
 
         if (password.length < 6) {
             res.status(400).json({
-                message: 'Password must be at least 6 characters long',
+                message: 'Password is too short',
             });
 
             return;

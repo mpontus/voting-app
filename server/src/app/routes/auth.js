@@ -2,6 +2,7 @@ import { sign } from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { v4 as uuid } from 'uuid';
 import wrap from './utils/asyncErrorWrapper'
+import HttpErrors from 'http-errors';
 
 export default function (app, db, secret) {
     app.post('/token', wrap(async (req, res) => {
@@ -26,6 +27,23 @@ export default function (app, db, secret) {
 
             case 'password': {
                 const { username, password } = req.body;
+
+                if (!username) {
+                    throw new HttpErrors.BadRequest('Username is empty');
+                }
+
+                if (typeof username !== 'string') {
+                    throw new HttpErrors.BadRequest('Username must be a string');
+                }
+
+                if (!password) {
+                    throw new HttpErrors.BadRequest('Password is empty');
+                }
+
+                if (typeof password !== 'string') {
+                    throw new HttpErrors.BadRequest('Password must be a string');
+                }
+
                 const user = await db.collection('users').findOne({ username });
 
                 if (!user) {
@@ -59,6 +77,9 @@ export default function (app, db, secret) {
 
                 return;
             }
+
+            default:
+                throw new HttpErrors.BadRequest('Invalid grant type');
         }
 
         res.status(400).json({

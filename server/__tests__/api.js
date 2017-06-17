@@ -10,6 +10,11 @@ const getAnonymousToken = (id = cuid()) => jwt.sign({
     id,
     anonymous: true,
 }, secret);
+const getAuthenticatedToken = ({ id = cuid(), username, avatar }) => jwt.sign({
+    id,
+    name: username,
+    avatar,
+}, secret);
 
 describe('API', () => {
     let app, db;
@@ -208,7 +213,7 @@ describe('API', () => {
 
     describe('POST /polls', () => {
         it('must save new poll in the database', async () => {
-            const authorId = 'anonymous_id';
+            const authorId = cuid();
             const token = getAnonymousToken(authorId);
 
             const response = await request(app).post('/polls')
@@ -234,7 +239,42 @@ describe('API', () => {
                     id: authorId,
                     anonymous: true,
                 },
-                tally: {},
+                tally: [0, 0],
+                votes: {},
+            });
+        });
+
+        it('must save the details of authenticated user', async () => {
+            const userId = cuid();
+            const username = 'foobar';
+            const avatar = 'http://avatar.com/url.png';
+            const token = getAuthenticatedToken({ id: userId, username, avatar });
+
+            const response = await request(app).post('/polls')
+                .set('Authorization', `Bearer ${token}`)
+                .send({
+                    title: 'foo',
+                    options: ['bar', 'baz'],
+                });
+
+            expect(response.body).toMatchObject({
+                id: expect.any(String),
+            });
+
+            const cursor = db.collection('polls')
+                .find({});
+
+            expect(await cursor.count()).toBe(1);
+            expect(await cursor.next()).toEqual({
+                _id: ObjectID(response.body.id),
+                title: 'foo',
+                options: ['bar', 'baz'],
+                author: {
+                    id: userId,
+                    username,
+                    avatar,
+                },
+                tally: [0, 0],
                 votes: {},
             });
         });
@@ -428,6 +468,162 @@ describe('API', () => {
 
             expect(response.status).toBe(403);
             expect(response.body.message).toBe('You can not vote on your own poll');
+        });
+
+        it('must raise an error when someone tries to vote twice', async () => {
+            const userId = cuid();
+            const result = await db.collection('polls').insertOne({
+                title: 'Question',
+                options: ['foo', 'bar'],
+                author: {
+                    id: cuid(),
+                    anonymous: true,
+                },
+                tally: [2, 3, 6],
+                votes: {
+                    [userId]: 'foo',
+                },
+            });
+            const id = result.insertedId;
+
+            const token = getAnonymousToken(userId);
+            const response = await request(app).post(`/polls/${id}/votes`)
+                .set('Authorization', `Bearer ${token}`)
+                .send({ option: 'bar' });
+
+            expect(response.status).toBe(403);
+            expect(response.body.message).toBe('You can not vote twice on the same poll');
+        });
+    });
+
+    describe('POST /polls/:id/options', () => {
+        it('must add new option', async () => {
+            const result = await db.collection('polls').insertOne({
+                title: 'Question',
+                options: ['foo', 'bar'],
+                author: {
+                    id: cuid(),
+                    anonymous: true,
+                },
+                tally: [2, 3],
+                votes: {},
+            });
+            const id = result.insertedId.toString();
+            const userId = cuid();
+            const token = getAuthenticatedToken({ id: userId, username: 'foobar' });
+
+            await request(app).post(`/polls/${id}/options`)
+                .set('Authorization', `Bearer ${token}`)
+                .send({ option: 'baz' });
+
+            const updatedPoll = await db.collection('polls')
+                .findOne({ _id: ObjectID(id) });
+
+            expect(updatedPoll.options).toEqual(['foo', 'bar', 'baz']);
+            expect(updatedPoll.tally).toEqual([2, 3, 1]);
+            expect(updatedPoll.votes).toMatchObject({
+                [userId]: 'baz',
+            })
+        });
+
+        it('must raise an error when user is not authenticated', async () => {
+            const result = await db.collection('polls').insertOne({
+                title: 'Question',
+                options: ['foo', 'bar'],
+                author: {
+                    id: cuid(),
+                    anonymous: true,
+                },
+                tally: [2, 3],
+                votes: {},
+            });
+            const id = result.insertedId.toString();
+            const token = getAnonymousToken();
+            const response = await request(app).post(`/polls/${id}/options`)
+                .set('Authorization', `Bearer ${token}`)
+                .send({ option: 'baz' });
+
+            expect(response.status).toBe(401);
+            expect(response.body.message).toBe('Authentication required');
+        });
+
+        it('must raise an error when poll does not exist', async () => {
+            const token = getAuthenticatedToken('foobar');
+            const response = await request(app).post(`/polls/123/options`)
+                .set('Authorization', `Bearer ${token}`)
+                .send({ option: 'bar' });
+
+            expect(response.status).toBe(404);
+            expect(response.body.message).toBe('Poll does not exist');
+        });
+
+
+        it('must raise an error when someone votes on their own poll', async () => {
+            const userId = cuid();
+            const result = await db.collection('polls').insertOne({
+                title: 'Question',
+                options: ['foo', 'bar'],
+                author: {
+                    id: userId,
+                    username: 'foobar',
+                },
+                tally: [2, 3, 6],
+                votes: {},
+            });
+            const id = result.insertedId;
+
+            const token = getAuthenticatedToken({ id: userId, username: 'foobar' });
+            const response = await request(app).post(`/polls/${id}/options`)
+                .set('Authorization', `Bearer ${token}`)
+                .send({ option: 'baz' });
+
+            expect(response.status).toBe(403);
+            expect(response.body.message).toBe('You can not vote on your own poll');
+        });
+
+        it('must raise an error when user has already voted on the poll', async () => {
+            const userId = cuid();
+            const result = await db.collection('polls').insertOne({
+                title: 'Question',
+                options: ['foo', 'bar'],
+                author: {
+                    id: cuid(),
+                    anonymous: true,
+                },
+                tally: [2, 3],
+                votes: {
+                    [userId]: 'bar',
+                },
+            });
+            const id = result.insertedId.toString();
+            const token = getAuthenticatedToken({ id: userId, username: 'foobar' });
+            const response = await request(app).post(`/polls/${id}/options`)
+                .set('Authorization', `Bearer ${token}`)
+                .send({ option: 'bar' });
+
+            expect(response.status).toBe(400);
+            expect(response.body.message).toBe('You can not vote twice on the same poll');
+        });
+
+        it('must raise an error when option already exists', async () => {
+            const result = await db.collection('polls').insertOne({
+                title: 'Question',
+                options: ['foo', 'bar'],
+                author: {
+                    id: cuid(),
+                    anonymous: true,
+                },
+                tally: [2, 3],
+                votes: {},
+            });
+            const id = result.insertedId.toString();
+            const token = getAuthenticatedToken('foobar');
+            const response = await request(app).post(`/polls/${id}/options`)
+                .set('Authorization', `Bearer ${token}`)
+                .send({ option: 'bar' });
+
+            expect(response.status).toBe(400);
+            expect(response.body.message).toBe('Option already exists');
         });
     });
 

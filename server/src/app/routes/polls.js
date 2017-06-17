@@ -1,5 +1,5 @@
 import { ObjectID } from 'mongodb';
-import { is, test, uniq, zipObj } from 'ramda';
+import { is, test, uniq, always, zipObj } from 'ramda';
 import jwt from 'express-jwt';
 import wrap from './utils/asyncErrorWrapper'
 import HttpErrors from 'http-errors';
@@ -11,11 +11,12 @@ function viewPoll(doc, user) {
             anonymous: true,
         };
     } else {
-        const { id, username } = doc.author;
+        const { id, username, avatar } = doc.author;
 
         author = {
             id,
             username,
+            avatar,
         };
     }
 
@@ -74,15 +75,18 @@ export default function (app, db, secret) {
             throw new HttpErrors.BadRequest('Some of the options are duplicated');
         }
 
-        const author = {
-            id: req.user.id,
-        };
-
+        let author;
         if (req.user.anonymous) {
-            author.anonymous = true;
+            author = {
+                id: req.user.id,
+                anonymous: true,
+            }
         } else {
-            author.anonymous = false;
-            author.username = req.user.name;
+            author = {
+                id: req.user.id,
+                username: req.user.name,
+                avatar: req.user.avatar,
+            }
         }
 
         const result = await db.collection('polls')
@@ -90,7 +94,7 @@ export default function (app, db, secret) {
                 title,
                 options,
                 author,
-                tally: {},
+                tally: options.map(always(0)),
                 votes: {},
             });
 
@@ -169,64 +173,39 @@ export default function (app, db, secret) {
         const userId = req.user.id;
 
         if (!option) {
-            res.status(400).json({
-                message: 'Option not specified',
-            });
-
-            return;
+            throw new HttpErrors.BadRequest('Option not specified');
         }
 
-        if (!ObjectID.isValid(id)) {
-            res.status(404).json({
-                message: 'Poll does not exist',
-            });
-
-            return;
+        let doc;
+        if (ObjectID.isValid(id)) {
+            [doc] = await db.collection('polls')
+                .find({
+                    _id: ObjectID(id),
+                })
+                .project({
+                    title: 1,
+                    options: 1,
+                    tally: 1,
+                    author: 1,
+                    [`votes.${req.user.id}`]: 1,
+                })
+                .toArray();
         }
-
-        const [doc] = await db.collection('polls')
-            .find({
-                _id: ObjectID(id),
-            })
-            .project({
-                title: 1,
-                options: 1,
-                tally: 1,
-                author: 1,
-                [`votes.${req.user.id}`]: 1,
-            })
-            .toArray();
 
         if (!doc) {
-            res.status(404).json({
-                message: 'Poll does not exist',
-            });
-
-            return;
+            throw new HttpErrors.NotFound('Poll does not exist');
         }
 
         if (doc.author.id === req.user.id) {
-            res.status(403).json({
-                message: 'You can not vote on your own poll',
-            });
-
-            return;
+            throw new HttpErrors.Forbidden('You can not vote on your own poll');
         }
 
         if (doc.votes[req.user.id]) {
-            res.status(403).json({
-                message: 'You can not vote on this poll again',
-            });
-
-            return;
+            throw new HttpErrors.Forbidden('You can not vote twice on the same poll');
         }
 
         if (!doc.options.includes(option)) {
-            res.status(400).json({
-                message: 'Option does not exist',
-            });
-
-            return;
+            throw new HttpErrors.BadRequest('Option does not exist');
         }
 
         const index = doc.options.indexOf(option);
@@ -245,4 +224,64 @@ export default function (app, db, secret) {
 
         res.status(201).json({});
     }));
+
+    app.post('/polls/:id/options', jwtMiddleware, wrap(async (req, res) => {
+        const { id } = req.params;
+        const { option } = req.body;
+        const { id: userId } = req.user;
+
+        if (req.user.anonymous) {
+            throw new HttpErrors.Unauthorized('Authentication required');
+        }
+
+        if (typeof option !== 'string') {
+            throw new HttpErrors.BadRequest('Option must be a string');
+        }
+
+        if (option === '') {
+            throw new HttpErrors.BadRequest('Option must not be empty');
+        }
+
+        let poll;
+        if (ObjectID.isValid(id)) {
+            [poll] = await db.collection('polls')
+                .find({ _id: ObjectID(id) })
+                .project({
+                    title: 1,
+                    options: 1,
+                    tally: 1,
+                    author: 1,
+                    [`votes.${userId}`]: 1,
+                })
+                .toArray();
+        }
+
+        if (!poll) {
+            throw new HttpErrors.NotFound('Poll does not exist');
+        }
+
+        if (poll.votes[userId]) {
+            throw new HttpErrors.BadRequest('You can not vote twice on the same poll');
+        }
+
+        if (poll.author.id === userId) {
+            throw new HttpErrors.Forbidden('You can not vote on your own poll');
+        }
+
+        if (poll.options.includes(option)) {
+            throw new HttpErrors.BadRequest('Option already exists');
+        }
+
+        await db.collection('polls').findOneAndUpdate({ _id: ObjectID(id) }, {
+            $push: {
+                options: option,
+                tally: 1,
+            },
+            $set: {
+                [`votes.${userId}`]: option,
+            },
+        });
+
+        res.status(201).json({});
+    }))
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { compose, withHandlers, setPropTypes } from 'recompose';
+import { compose, withHandlers, setPropTypes, defaultProps } from 'recompose';
 import { CardText, Checkbox, Subheader, TextField } from 'material-ui';
 
 const propTypes = {
@@ -12,10 +12,14 @@ const propTypes = {
         option: PropTypes.string.isRequired,
     }),
     onChange: PropTypes.func,
+    customOptionEnabled: PropTypes.bool,
 };
 
 const enhance = compose(
     setPropTypes(propTypes),
+    defaultProps({
+        customOptionEnabled: true,
+    }),
     withHandlers({
         // Handler for checkboxes
         handleCheck: ({ onChange, value }) => (event) => {
@@ -45,6 +49,7 @@ const enhance = compose(
 const VotingForm = ({
     options,
     value,
+    customOptionEnabled,
     handleCheck,
     handleChange,
 }) => {
@@ -79,13 +84,15 @@ const VotingForm = ({
                         );
                     })}
                 </div>
-                <TextField
-                    style={{ visibility: showCustomOptonInput ? 'visible' : 'hidden' }}
-                    floatingLabelText="Add new option"
-                    floatingLabelFixed
-                    value={customValue}
-                    onChange={handleChange}
-                />
+                {customOptionEnabled && (
+                    <TextField
+                        style={{ visibility: showCustomOptonInput ? 'visible' : 'hidden' }}
+                        floatingLabelText="Add new option"
+                        floatingLabelFixed
+                        value={customValue}
+                        onChange={handleChange}
+                    />
+                )}
             </CardText>
         </div>
     );

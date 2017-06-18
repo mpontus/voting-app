@@ -76,6 +76,7 @@ class ViewPollPage extends Component {
                 ) : (
                     <Form
                         {...poll}
+                        user={user}
                     />
                 )}
             </Card>

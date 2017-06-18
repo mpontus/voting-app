@@ -23,7 +23,7 @@ const enhance = compose(
     }),
 );
 
-const Form = ({ title, options, author, value, setValue, handleSubmit }) => (
+const Form = ({ user, title, options, author, value, setValue, handleSubmit }) => (
     <Layout
         title={title}
         avatar={author.avatar}
@@ -41,6 +41,7 @@ const Form = ({ title, options, author, value, setValue, handleSubmit }) => (
             options={options}
             value={value}
             onChange={setValue}
+            customOptionEnabled={!user.anonymous}
         />
     </Layout>
 );

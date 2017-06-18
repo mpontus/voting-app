@@ -1,7 +1,8 @@
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import wrap from './utils/asyncErrorWrapper'
 
-export default function (app, db, saltRounds) {
+export default function (app, db, secret, saltRounds) {
     app.post('/users', wrap(async (req, res) => {
         const { username, password } = req.body;
 
@@ -48,13 +49,17 @@ export default function (app, db, saltRounds) {
             passwordHash,
         });
 
-        [doc] = result.ops;
+        const [user] = result.ops;
 
-        const user = {
-            id: doc._id,
-            username: doc.username,
+        const payload = {
+            id: user._id,
+            name: user.username,
         };
+        const token = jwt.sign(payload, secret);
 
-        res.status(201).json(user);
+        res.status(201).json({
+            access_token: token,
+            token_type: 'bearer',
+        });
     }));
 }

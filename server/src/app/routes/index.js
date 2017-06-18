@@ -4,6 +4,6 @@ import pollsRoutes from './polls'
 
 export default function (app, db, secret, saltRounds) {
     authRoutes(app, db, secret);
-    usersRoutes(app, db, saltRounds);
+    usersRoutes(app, db, secret, saltRounds);
     pollsRoutes(app, db, secret);
 }

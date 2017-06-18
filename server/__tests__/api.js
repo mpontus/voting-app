@@ -53,10 +53,11 @@ describe('API', () => {
             // TODO: expose salt rounds via app config
             const passwordHash = await bcrypt.hash('123456', 10);
 
-            db.collection('users').insertOne({
+            const result = await db.collection('users').insertOne({
                 username: 'foobar',
                 passwordHash,
             });
+            const userId = result.insertedId.toString();
 
             const response = await request(app).post('/token')
                 .send({
@@ -70,6 +71,15 @@ describe('API', () => {
                 token_type: 'bearer',
                 access_token: expect.any(String),
             });
+
+            const accessToken = response.body.access_token;
+            const userData = jwt.decode(accessToken);
+
+            expect(userData).toEqual({
+                iat: expect.any(Number),
+                id: userId,
+                name: 'foobar',
+            })
         });
 
         it('must raise an error when username is not provided', async () => {
@@ -170,6 +180,28 @@ describe('API', () => {
                 _id: expect.any(ObjectID),
                 username: 'foobar',
                 passwordHash: expect.any(String),
+            });
+        });
+
+        it('must return access token for the new user', async () => {
+            const response = await request(app).post('/users')
+                .send({
+                    username: 'foobar',
+                    password: '123456',
+                });
+
+            expect(response.body).toEqual({
+                access_token: expect.any(String),
+                token_type: 'bearer',
+            });
+
+            const accessToken = response.body.access_token;
+            const userData = jwt.decode(accessToken);
+
+            expect(userData).toEqual({
+                iat: expect.any(Number),
+                id: expect.any(String),
+                name: 'foobar',
             });
         });
 

@@ -17,10 +17,12 @@ export const createUserResult = (payload) => {
         };
     }
 
+    const { accessToken } = payload;
+
     return {
         type: CREATE_USER_RESULT,
         payload: {
-            user: payload,
+            accessToken,
         },
     };
 };
@@ -28,16 +30,18 @@ export const createUserResult = (payload) => {
 export const registerUser = ({ username, password }) => async (dispatch, getState, api) => {
     dispatch(createUserRequest({ username, password }));
 
-    let user;
+    let response;
     try {
-        user = await api.register({ username, password });
+        response = await api.register({ username, password });
     } catch (error) {
         dispatch(createUserResult(error));
 
         return Promise.reject(error);
     }
 
-    dispatch(createUserResult(user));
+    const accessToken = response.access_token;
 
-    return Promise.resolve(user);
+    dispatch(createUserResult({ accessToken }));
+
+    return Promise.resolve(response);
 };

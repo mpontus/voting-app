@@ -56,10 +56,9 @@ class ViewPollPage extends Component {
 
         const poll = this.props.poll.toJS();
         const user = this.props.user.toJS();
-        const { myVote, author, tally } = poll;
-        const isOwner = user.id === author.id;
+        const { myVote, ownedByMe, tally } = poll;
         const hasVoted = myVote !== null;
-        const showResults = isOwner || hasVoted;
+        const showResults = ownedByMe || hasVoted;
 
         return (
             <Card>

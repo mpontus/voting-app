@@ -92,6 +92,39 @@ describe('API gateway', () => {
         });
     });
 
+    describe('register', () => {
+        it('must send a registration request', async () => {
+            const request = {
+                username: 'foobar',
+                password: '123456',
+            };
+            const response = {
+                access_token: 'foo',
+                refresh_token: 'bar',
+            };
+
+            fetchMock.restore().post((url, opts) => {
+                console.log(opts);
+                expect(url).toBe('/users');
+                expect(opts.method).toBe('POST');
+                expect(JSON.parse(opts.body)).toEqual(request);
+
+                return true;
+            }, response);
+
+            credentialsStore.setCredentials.mockReset();
+
+            const result = await api.register(request);
+
+            expect(result).toEqual(response);
+            expect(credentialsStore.setCredentials).toHaveBeenCalledTimes(1);
+            expect(credentialsStore.setCredentials).toHaveBeenCalledWith({
+                accessToken: 'foo',
+                refreshToken: 'bar',
+            });
+        });
+    });
+
     describe('getPolls', () => {
         const response = {
             items: [{

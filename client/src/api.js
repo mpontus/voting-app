@@ -201,11 +201,23 @@ export default class Api {
         return Promise.resolve(jwtDecode(accessToken));
     }
 
-    register({ username, password }) {
-        return this.fetch(this.getResourceUrl('users'), {
+    async register({ username, password }) {
+        const result = await this.fetch(this.getResourceUrl('users'), {
             method: 'POST',
             body: JSON.stringify({ username, password }),
         });
+
+        const {
+            access_token: accessToken,
+            refresh_token: refreshToken,
+        } = result;
+
+        this.setCredentials({
+            accessToken,
+            refreshToken,
+        });
+
+        return result;
     }
 
     getPolls({ limit, offset } = {}) {

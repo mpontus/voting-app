@@ -27,7 +27,9 @@ const enhance = compose(
 
             return Promise.resolve();
         },
-        handleRegister: ({ registerUser, history: { push } }) => ({ username, password }) => {
+        handleRegister: ({ registerUser, history: { push } }) => (values) => {
+            const { username, password } = values.toJS();
+
             registerUser({ username, password }).then(() => {
                 push('/');
             }).catch(() => {});

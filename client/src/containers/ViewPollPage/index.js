@@ -56,7 +56,7 @@ class ViewPollPage extends Component {
 
         const poll = this.props.poll.toJS();
         const user = this.props.user.toJS();
-        const { myVote, author } = poll;
+        const { myVote, author, tally } = poll;
         const isOwner = user.id === author.id;
         const hasVoted = myVote !== null;
         const showResults = isOwner || hasVoted;
@@ -72,6 +72,7 @@ class ViewPollPage extends Component {
                     <Results
                         {...poll}
                         value={myVote}
+                        tally={tally}
                     />
                 ) : (
                     <Form

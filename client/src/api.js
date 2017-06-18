@@ -239,4 +239,15 @@ export default class Api {
             }),
         });
     }
+
+    createOption(pollId, option) {
+        const url = this.getResourceUrl(`polls/${pollId}/options`)
+
+        return this.fetch(url, {
+            method: 'POST',
+            body: JSON.stringify({
+                option,
+            }),
+        });
+    }
 }

@@ -6,9 +6,15 @@ const credentialsStore = {
     setCredentials: jest.fn(),
 };
 
+const anonymousCredentialsStore = {
+    getCredentials: jest.fn(),
+    setCredentials: jest.fn(),
+};
+
 const api = new Api('/', {
     fetch: fetchMock.fetchMock,
     credentialsStore,
+    anonymousCredentialsStore,
 });
 
 describe('API gateway', () => {
@@ -30,7 +36,7 @@ describe('API gateway', () => {
                 return true;
             }, response);
 
-            credentialsStore.setCredentials.mockReset();
+            anonymousCredentialsStore.setCredentials.mockReset();
 
             result = await api.getAnonymousToken();
         });
@@ -40,10 +46,9 @@ describe('API gateway', () => {
         });
 
         it('must store new credentials', () => {
-            expect(credentialsStore.setCredentials).toHaveBeenCalledTimes(1);
-            expect(credentialsStore.setCredentials).toHaveBeenCalledWith({
+            expect(anonymousCredentialsStore.setCredentials).toHaveBeenCalledTimes(1);
+            expect(anonymousCredentialsStore.setCredentials).toHaveBeenCalledWith({
                 accessToken: response.access_token,
-                refreshToken: null,
             });
         });
     });
@@ -69,7 +74,7 @@ describe('API gateway', () => {
                 return true;
             }, response);
 
-            credentialsStore.setCredentials.mockReset()
+            credentialsStore.setCredentials.mockReset();
 
             result = await api.login('foo', 'bar');
         });

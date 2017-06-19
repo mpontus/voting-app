@@ -2,16 +2,27 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { compose, withHandlers } from 'recompose';
 import { withRouter } from 'react-router'
+import { createStructuredSelector } from 'reselect';
 import LoginForm from '../LoginForm';
 import RegistrationForm from '../RegistrationForm'
 import { login } from './actions';
 import { registerUser } from '../RegistrationPage/actions'
 import { Tab, Card, CardText, CardActions, FontIcon, FlatButton } from 'material-ui';
-import { submit } from 'redux-form';
+import { isValid, submit } from 'redux-form/immutable';
 import SwipeableTabs from '../../components/SwipeableTabs';
 
+const mapStateToProps = () => {
+    const [isLoginFormValid, isRegistrationFormValid] =
+        ['login', 'registration'].map(form => isValid(form));
+
+    return createStructuredSelector({
+        isLoginFormValid,
+        isRegistrationFormValid,
+    });
+};
+
 const enhance = compose(
-    connect(null, { login, registerUser, submit }),
+    connect(mapStateToProps, { login, registerUser, submit }),
     withRouter,
     withHandlers({
         handleSubmit: ({ login, history: { push } }) => async (values) => {
@@ -33,7 +44,7 @@ const enhance = compose(
     })
 );
 
-const LoginPage = ({ handleSubmit, handleRegister, submit }) => (
+const LoginPage = ({ isLoginFormValid, isRegistrationFormValid, handleSubmit, handleRegister, submit }) => (
     <Card>
         <SwipeableTabs
             animateHeight
@@ -49,6 +60,7 @@ const LoginPage = ({ handleSubmit, handleRegister, submit }) => (
                 <CardActions style={{ textAlign: 'right' }}>
                     <FlatButton
                         primary
+                        disabled={!isLoginFormValid}
                         icon={<FontIcon className="fa fa-sign-in"/>}
                         label="Enter the Voting App"
                         onClick={() => submit('login')}
@@ -65,6 +77,7 @@ const LoginPage = ({ handleSubmit, handleRegister, submit }) => (
                 <CardActions style={{ textAlign: 'right' }}>
                     <FlatButton
                         primary
+                        disabled={!isRegistrationFormValid}
                         icon={<FontIcon className="fa fa-sign-in"/>}
                         label="Create New Account"
                         onClick={() => submit('registration')}

@@ -31,6 +31,7 @@ const App = ({ loginShown }) => (
             ) : (
                 <Switch>
                     <Route exact path="/" component={HomePage} />
+                    <Route exact path="/login" component={LoginPage} />
                     <Route exact path="/poll/:id" component={ViewPollPage} />
                     <Route exact path="/new" component={CreatePollPage} />
                     <Route exact path="/signup" component={RegistrationPage} />

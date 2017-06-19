@@ -2,6 +2,7 @@ import React from 'react';
 import { reduxForm, Field } from 'redux-form/immutable';
 import { TextField } from 'redux-form-material-ui';
 
+const required = value => !value && 'Required';
 const enhance = reduxForm({ form: 'registration' });
 
 const RegistrationPage = ({
@@ -13,6 +14,7 @@ const RegistrationPage = ({
             name="username"
             fullWidth
             floatingLabelText="Username"
+            validate={required}
         />
         <Field
             component={TextField}
@@ -20,6 +22,7 @@ const RegistrationPage = ({
             fullWidth
             floatingLabelText="Password"
             type="password"
+            validate={required}
         />
         <Field
             component={TextField}
@@ -27,6 +30,7 @@ const RegistrationPage = ({
             fullWidth
             floatingLabelText="Password confirmation"
             type="password"
+            validate={required}
         />
         <input type="submit" style={{ display: 'none' }} />
     </form>

@@ -1,3 +1,12 @@
-export { default as entities } from './entities'
-export { default as user } from './user'
-export { default as notifications } from './notifications'
+import { combineReducers } from 'redux-immutable';
+import showLogin from './showLogin';
+import user from './user';
+import entities from './entities';
+import notifications from './notifications';
+
+export default combineReducers({
+    user,
+    entities,
+    notifications,
+    showLogin,
+})

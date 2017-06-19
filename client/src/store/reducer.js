@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux-immutable';
 import { reducer as form } from 'redux-form/immutable';
-import global from '../containers/App/reducer';
+import global from '../containers/App/reducers/index';
 import newPoll from '../containers/CreatePollPage/reducer'
 import pollForm from '../containers/PollForm/reducer';
 import pollPage from '../containers/PollPage/reducer';

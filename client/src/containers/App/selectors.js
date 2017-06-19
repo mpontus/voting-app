@@ -45,3 +45,8 @@ export const makeGetUser = () => createSelector(
     getGlobal,
     global => global.get('user'),
 );
+
+export const makeGetLoginShown = () => createSelector(
+    getGlobal,
+    global => global.get('showLogin'),
+);

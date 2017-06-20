@@ -8,7 +8,7 @@ import RegistrationForm from '../RegistrationForm'
 import { login } from './actions';
 import { registerUser } from '../RegistrationPage/actions'
 import { Tab, Card, CardText, CardActions, FontIcon, FlatButton } from 'material-ui';
-import { isValid, submit } from 'redux-form/immutable';
+import { isValid, submit, SubmissionError } from 'redux-form/immutable';
 import SwipeableTabs from '../../components/SwipeableTabs';
 
 const mapStateToProps = () => {
@@ -31,15 +31,17 @@ const enhance = compose(
             try {
                 await login({ username, password });
             } catch (error) {
-                return;
+                throw new SubmissionError(error);
             }
-
-            return Promise.resolve();
         },
-        handleRegister: ({ registerUser, history: { push } }) => (values) => {
+        handleRegister: ({ registerUser, history: { push } }) => async (values) => {
             const { username, password } = values.toJS();
 
-            registerUser({ username, password })
+            try {
+                await registerUser({ username, password });
+            } catch (error) {
+                throw new SubmissionError(error);
+            }
         }
     })
 );

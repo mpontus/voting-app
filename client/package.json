@@ -42,6 +42,7 @@
     "node-fetch": "^1.6.3",
     "react-scripts": "^1.0.2",
     "react-test-renderer": "^15.5.4",
+    "redux-logger": "^3.0.6",
     "webpack-dev-server": "^2.4.5",
     "with-fetch-mock": "^0.1.0"
   },

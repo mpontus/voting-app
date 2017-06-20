@@ -1,5 +1,6 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
+import logger from 'redux-logger';
 import { routerMiddleware as createRouterMiddleware } from 'react-router-redux';
 import reducer from './reducer';
 
@@ -10,6 +11,7 @@ export default function configureStore(api, history, initialState) {
     const routerMiddleware = createRouterMiddleware(history);
 
     const middleware = applyMiddleware(
+        logger,
         thunkMiddleware,
         routerMiddleware
     );

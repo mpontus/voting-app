@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import { muiThemeable } from 'material-ui/styles';
-import { brown50 } from 'material-ui/styles/colors'
 
 const propTypes = {
     children: PropTypes.node,

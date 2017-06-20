@@ -1,6 +1,6 @@
 import React from 'react';
 import { sum, values } from 'ramda';
-import { CardText, FontIcon, Menu, MenuItem } from 'material-ui';
+import { CardText, FontIcon } from 'material-ui';
 import Layout from './Layout';
 import { Cell, Pie, PieChart } from 'recharts';
 import { Col, Row } from 'react-flexbox-grid';

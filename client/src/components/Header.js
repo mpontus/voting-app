@@ -1,6 +1,4 @@
 import React from 'react';
-import { cond, prop } from 'ramda';
-import { Link } from 'react-router-dom';
 import {
     AppBar,
     IconMenu,

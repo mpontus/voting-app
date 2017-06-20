@@ -8,6 +8,10 @@ export default (state = null, action) => {
     switch (action.type) {
         case LOGIN_RESULT:
         case CREATE_USER_RESULT: {
+            if (action.error) {
+                return state;
+            }
+
             const { accessToken } = action.payload;
             const user = jwtDecode(accessToken);
 
